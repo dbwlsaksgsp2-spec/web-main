@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정유진 | 스마트 오피스 & AI 자동화 스페셜리스트</title>
+    <meta name="description" content="정유진 - 체계적인 문서 관리 경험과 AI 자동화 기술로 사무 생산성을 극대화하는 스마트 오피스 전문가입니다.">
+
+    <!-- Open Graph (Facebook, KakaoTalk, LinkedIn 등 SNS 미리보기) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="정유진 | 스마트 오피스 & AI 자동화 스페셜리스트">
+    <meta property="og:description" content="체계적인 문서 관리 경험과 AI 프롬프트 엔지니어링, 파이썬 업무 자동화 역량을 보유한 스마트 오피스 전문가 정유진의 디지털 명함 & 이력서입니다.">
+    <meta property="og:image" content="og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card (X/Twitter 미리보기) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="정유진 | 스마트 오피스 & AI 자동화 스페셜리스트">
+    <meta name="twitter:description" content="체계적인 문서 관리 경험과 AI 자동화 기술로 사무 생산성을 극대화하는 스마트 오피스 전문가의 디지털 명함입니다.">
+    <meta name="twitter:image" content="og-image.png">
+
+    <!-- Google Fonts: Noto Sans KR (Korean) & Inter (English) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-mesh"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+    <canvas id="particleCanvas" class="particle-canvas"></canvas>
+
+    <div class="app-container">
+
+        <!-- ==================== 1. BUSINESS CARD VIEW ==================== -->
+        <main class="card-view-container active" id="cardView">
+
+            <!-- Status Badge -->
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>구직 중 · Open to Work</span>
+            </div>
+
+            <div class="hero-card">
+                <!-- Profile Image with animated ring -->
+                <div class="hero-avatar-wrapper">
+                    <div class="avatar-ring"></div>
+                    <img src="profile.jpg" alt="정유진 프로필" class="hero-avatar">
+                </div>
+
+                <!-- Hero Info -->
+                <h1 class="hero-name">정유진</h1>
+                <p class="hero-role">스마트 오피스 & AI 자동화 스페셜리스트</p>
+
+                <!-- Typing Tagline -->
+                <div class="typing-wrapper">
+                    <span class="typing-text" id="typingText"></span>
+                    <span class="typing-cursor">|</span>
+                </div>
+
+                <!-- Stat Chips -->
+                <div class="stat-chips">
+                    <div class="stat-chip">
+                        <i data-lucide="briefcase"></i>
+                        <div>
+                            <span class="stat-number" data-count="5">0</span><span class="stat-suffix">년+</span>
+                            <span class="stat-label">조직 경험</span>
+                        </div>
+                    </div>
+                    <div class="stat-chip">
+                        <i data-lucide="zap"></i>
+                        <div>
+                            <span class="stat-number" data-count="4">0</span><span class="stat-suffix">개+</span>
+                            <span class="stat-label">자동화 프로젝트</span>
+                        </div>
+                    </div>
+                    <div class="stat-chip">
+                        <i data-lucide="sparkles"></i>
+                        <div>
+                            <span class="stat-number" data-count="6">0</span><span class="stat-suffix">개+</span>
+                            <span class="stat-label">AI 도구 활용</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Bar -->
+                <div class="contact-bar">
+                    <a href="mailto:123123123@gmail.com" class="contact-chip">
+                        <i data-lucide="mail"></i>
+                        <span>123123123@gmail.com</span>
+                    </a>
+                    <a href="tel:010-9876-5432" class="contact-chip">
+                        <i data-lucide="phone"></i>
+                        <span>010-9876-5432</span>
+                    </a>
+                    <div class="contact-chip">
+                        <i data-lucide="map-pin"></i>
+                        <span>인천시 미추홀구</span>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <div class="social-row">
+                    <a href="#" class="social-pill" title="GitHub">
+                        <i data-lucide="code-xml"></i><span>GitHub</span>
+                    </a>
+                    <a href="#" class="social-pill" title="LinkedIn">
+                        <i data-lucide="user-check"></i><span>LinkedIn</span>
+                    </a>
+                    <a href="#" class="social-pill" title="Blog">
+                        <i data-lucide="pen-line"></i><span>Blog</span>
+                    </a>
+                </div>
+            </div>
+
+            <p class="card-instruction">
+                <i data-lucide="arrow-down" style="width:14px;height:14px;"></i>
+                아래 버튼을 눌러 상세 이력서를 확인해보세요
+            </p>
+        </main>
+
+        <!-- ==================== 2. RESUME VIEW ==================== -->
+        <section class="resume-view-container" id="resumeView">
+            <div class="resume-paper">
+
+                <!-- Resume Header -->
+                <header class="resume-header">
+                    <div class="resume-profile">
+                        <div class="resume-avatar-wrapper">
+                            <img src="profile.jpg" alt="정유진 프로필" class="resume-avatar">
+                        </div>
+                        <div class="resume-identity">
+                            <h2 class="resume-name">정유진</h2>
+                            <p class="resume-subtitle">스마트 오피스 & AI 자동화 스페셜리스트</p>
+                            <div class="resume-badges">
+                                <span class="badge badge-open"><i data-lucide="radio" style="width:12px;height:12px;"></i> 구직 중</span>
+                                <span class="badge badge-location"><i data-lucide="map-pin" style="width:12px;height:12px;"></i> 인천</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="resume-meta">
+                        <a href="mailto:123123123@gmail.com" class="meta-link"><i data-lucide="mail"></i> 123123123@gmail.com</a>
+                        <a href="tel:010-9876-5432" class="meta-link"><i data-lucide="phone"></i> 010-9876-5432</a>
+                    </div>
+                </header>
+
+                <hr class="divider">
+
+                <!-- Resume Body Grid -->
+                <div class="resume-content-grid">
+
+                    <!-- Left Column -->
+                    <div class="main-column">
+
+                        <!-- About Me -->
+                        <section class="resume-section fade-section">
+                            <h3 class="section-title"><i data-lucide="user"></i> 소개</h3>
+                            <p class="about-text">
+                                이전 직무에서의 체계적인 행정 관리 및 비즈니스 커뮤니케이션 경험 위에,
+                                최근 AI 프롬프트 엔지니어링과 파이썬 업무 자동화 역량을 더해
+                                <strong>스마트한 비즈니스 서포트</strong>를 지향하는 인재입니다.
+                            </p>
+                            <p class="about-text" style="margin-top: 10px;">
+                                4년간의 육아 공백기 동안 급변하는 IT 오피스 환경에 맞춰 스스로 기술을 적극 학습하며
+                                실무 복귀를 철저히 준비하였습니다. 단순 반복적인 오피스 행정 업무를 분석하여
+                                <strong>AI 및 자동화 파이프라인을 구축</strong>함으로써
+                                팀의 생산성을 극대화하는 데 기여하고자 합니다.
+                            </p>
+                        </section>
+
+                        <!-- Key Highlights -->
+                        <section class="resume-section fade-section">
+                            <h3 class="section-title"><i data-lucide="trophy"></i> 핵심 성과</h3>
+                            <div class="highlights-grid">
+                                <div class="highlight-card">
+                                    <div class="highlight-icon"><i data-lucide="file-text"></i></div>
+                                    <div class="highlight-info">
+                                        <span class="highlight-value">100건+</span>
+                                        <span class="highlight-label">자동 생성된 업무 보고서</span>
+                                    </div>
+                                </div>
+                                <div class="highlight-card">
+                                    <div class="highlight-icon"><i data-lucide="clock"></i></div>
+                                    <div class="highlight-info">
+                                        <span class="highlight-value">주 8시간</span>
+                                        <span class="highlight-label">반복 업무 절감 효과</span>
+                                    </div>
+                                </div>
+                                <div class="highlight-card">
+                                    <div class="highlight-icon"><i data-lucide="bot"></i></div>
+                                    <div class="highlight-info">
+                                        <span class="highlight-value">4개+</span>
+                                        <span class="highlight-label">AI 에이전트 파이프라인 구축</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Experience -->
+                        <section class="resume-section fade-section">
+                            <h3 class="section-title"><i data-lucide="briefcase"></i> 주요 조직 경험</h3>
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-header">
+                                        <h4 class="job-title">운영 지원 및 일반 행정 담당</h4>
+                                        <span class="period">2017.03 - 2022.02</span>
+                                    </div>
+                                    <p class="company">미래 코퍼레이션 (Mirae Corporation)</p>
+                                    <ul class="task-list">
+                                        <li>사내 일반 행정 지원, 프로젝트 일정 조율 및 비즈니스 문서 표준화 총괄</li>
+                                        <li>고객 피드백 채널 운영을 통한 고객 소통 창구 최적화 (만족도 지표 개선)</li>
+                                        <li>부서 간 협업 업무 프로세스 매뉴얼 작성 및 효율적인 공통 자원 관리</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Projects -->
+                        <section class="resume-section fade-section">
+                            <h3 class="section-title"><i data-lucide="folder-git-2"></i> 실무 자동화 프로젝트</h3>
+                            <div class="projects-grid">
+                                <div class="project-card">
+                                    <div class="project-card-header">
+                                        <div class="project-icon"><i data-lucide="file-chart-column-increasing"></i></div>
+                                        <h4 class="project-name">AI 기반 업무 보고서 자동 생성기</h4>
+                                    </div>
+                                    <p class="project-desc">TOML 및 CSV 문서 데이터를 파싱하여 대형 언어 모델(LLM)을 활용해 세련된 주간 업무 보고 리포트 및 대본 파일로 자동 변환하고 저장하는 오피스 보조 시스템 구축</p>
+                                    <div class="project-tags">
+                                        <span>Python</span>
+                                        <span>LLM API</span>
+                                        <span>Office Automation</span>
+                                    </div>
+                                </div>
+                                <div class="project-card">
+                                    <div class="project-card-header">
+                                        <div class="project-icon"><i data-lucide="trending-up"></i></div>
+                                        <h4 class="project-name">실시간 가격 추적 및 마켓 동향 모니터링</h4>
+                                    </div>
+                                    <p class="project-desc">정기적으로 웹사이트 데이터를 스크래핑하여 가격 변동 정보를 수집하고, 텔레그램 API를 통해 수집 데이터를 실시간 메시지로 자동 보고하는 알림 서비스 개발</p>
+                                    <div class="project-tags">
+                                        <span>Web Scraping</span>
+                                        <span>API Integration</span>
+                                        <span>Automation</span>
+                                    </div>
+                                </div>
+                                <div class="project-card">
+                                    <div class="project-card-header">
+                                        <div class="project-icon"><i data-lucide="presentation"></i></div>
+                                        <h4 class="project-name">AI 프레젠테이션 슬라이드 자동 빌더</h4>
+                                    </div>
+                                    <p class="project-desc">발표 대본과 데이터 분석 결과를 기반으로 python-pptx 라이브러리와 LLM을 결합해 시각적으로 완성된 파워포인트 슬라이드를 자동 생성하는 워크플로우 구축</p>
+                                    <div class="project-tags">
+                                        <span>Python</span>
+                                        <span>python-pptx</span>
+                                        <span>GenAI</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="side-column">
+
+                        <!-- Skills with Progress -->
+                        <section class="resume-section fade-section">
+                            <h3 class="section-title"><i data-lucide="layers"></i> 기술 역량</h3>
+                            <div class="skills-modern">
+                                <div class="skill-bar-item">
+                                    <div class="skill-bar-header">
+                                        <span class="skill-bar-name">프롬프트 엔지니어링</span>
+                                        <span class="skill-bar-pct">90%</span>
+                                    </div>
+                                    <div class="skill-bar-track"><div class="skill-bar-fill" data-width="90"></div></div>
+                                </div>
+                                <div class="skill-bar-item">
+                                    <div class="skill-bar-header">
+                                        <span class="skill-bar-name">Python 자동화</span>
+                                        <span class="skill-bar-pct">80%</span>
+                                    </div>
+                                    <div class="skill-bar-track"><div class="skill-bar-fill" data-width="80"></div></div>
+                                </div>
+                                <div class="skill-bar-item">
+                                    <div class="skill-bar-header">
+                                        <span class="skill-bar-name">API 연동 & 웹 스크래핑</span>
+                                        <span class="skill-bar-pct">75%</span>
+                                    </div>
+                                    <div class="skill-bar-track"><div class="skill-bar-fill" data-width="75"></div></div>
+                                </div>
+                                <div class="skill-bar-item">
+                                    <div class="skill-bar-header">
+                                        <span class="skill-bar-name">MS Office & Google Workspace</span>
+                                        <span class="skill-bar-pct">95%</span>
+                                    </div>
+                                    <div class="skill-bar-track"><div class="skill-bar-fill" data-width="95"></div></div>
+                                </div>
+                                <div class="skill-bar-item">
+                                    <div class="skill-bar-header">
+                                        <span class="skill-bar-name">RPA (Power Automate)</span>
+                                        <span class="skill-bar-pct">70%</span>
+                                    </div>
+                                    <div class="skill-bar-track"><div class="skill-bar-fill" data-width="70"></div></div>
+                                </div>
+                            </div>
+
+                            <!-- Tool Tags -->
+                            <div class="tool-cloud">
+                                <span class="tool-tag">ChatGPT</span>
+                                <span class="tool-tag">Claude</span>
+                                <span class="tool-tag">Gemini</span>
+                                <span class="tool-tag">Notion</span>
+                                <span class="tool-tag">Slack</span>
+                                <span class="tool-tag">Pandas</span>
+                                <span class="tool-tag">Telegram Bot</span>
+                                <span class="tool-tag">Google Sheets API</span>
+                            </div>
+                        </section>
+
+                        <!-- Education -->
+                        <section class="resume-section fade-section">
+                            <h3 class="section-title"><i data-lucide="graduation-cap"></i> 교육 및 학력</h3>
+                            <div class="education-list">
+                                <div class="edu-item">
+                                    <div class="edu-badge">수강중</div>
+                                    <h4 class="edu-title">파이썬 & AI 사무 자동화 실무 전문가 과정</h4>
+                                    <p class="edu-school">에이아이 교육 센터</p>
+                                    <span class="edu-period">2026.03 - 2026.06</span>
+                                </div>
+                                <div class="edu-item">
+                                    <h4 class="edu-title">영문학 학사 졸업</h4>
+                                    <p class="edu-school">한국대학교</p>
+                                    <span class="edu-period">2013.03 - 2017.02</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Strengths -->
+                        <section class="resume-section fade-section">
+                            <h3 class="section-title"><i data-lucide="heart-handshake"></i> 핵심 강점</h3>
+                            <div class="strengths-grid">
+                                <div class="strength-item">
+                                    <i data-lucide="search"></i>
+                                    <span>문제 발견 & 분석</span>
+                                </div>
+                                <div class="strength-item">
+                                    <i data-lucide="message-circle"></i>
+                                    <span>비즈니스 커뮤니케이션</span>
+                                </div>
+                                <div class="strength-item">
+                                    <i data-lucide="workflow"></i>
+                                    <span>프로세스 최적화</span>
+                                </div>
+                                <div class="strength-item">
+                                    <i data-lucide="book-open"></i>
+                                    <span>자기 주도 학습</span>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- TOGGLE VIEW BUTTON (Floating Action Button) -->
+    <button class="toggle-btn" id="toggleBtn" aria-label="Toggle between Card and Resume">
+        <span class="toggle-btn-content">
+            <i data-lucide="file-text" class="btn-icon" id="btnIcon"></i>
+            <span class="btn-text" id="btnText">이력서 보기</span>
+        </span>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
