@@ -1,0 +1,213 @@
+Number of slides: 11
+
+=================== SLIDE 1 (Slide ID: 256) ===================
+[TextBox 21]:
+  P1: 핵심 내용을 한눈에!
+[TextBox 22]:
+  P1: 핵심 내용을 한눈에 정리해주는  만능 프레젠테이션
+[TextBox 23]:
+  P1: 이수진 책임
+[TextBox 24]:
+  P1: Borcelle
+[TextBox 25]:
+  P1: 만능 프레젠테이션
+
+=================== SLIDE 2 (Slide ID: 257) ===================
+[TextBox 20]:
+  P1: 목차
+[TextBox 21]:
+  P1: Agenda
+[TextBox 22]:
+  P1: 배경&문제 인식
+[TextBox 23]:
+  P1: 1.
+[TextBox 24]:
+  P1: 5.
+[TextBox 25]:
+  P1: 2.
+[TextBox 26]:
+  P1: 6.
+[TextBox 27]:
+  P1: 3.
+[TextBox 28]:
+  P1: 7.
+[TextBox 29]:
+  P1: 4.
+[TextBox 30]:
+  P1: 8.
+[TextBox 31]:
+  P1: 목표
+[TextBox 32]:
+  P1: 진행 과정
+[TextBox 33]:
+  P1: 개선 효과
+[TextBox 34]:
+  P1: 성과 요약
+[TextBox 35]:
+  P1: 중간 요약
+[TextBox 36]:
+  P1: 제안
+[TextBox 37]:
+  P1: 기대 효과
+
+=================== SLIDE 3 (Slide ID: 258) ===================
+[TextBox 32]:
+  P1: 배경&문제 인식
+[TextBox 33]:
+  P1: Background
+[TextBox 34]:
+  P1: 현재 방식은 비효율적인 절차로 인해 시간과 비용이 지속적으로 낭비되고 있습니다.
+[TextBox 35]:
+  P1: 명확한 기준과 방향이 없어 의사결정이 늦어지는 문제가 반복되고 있습니다.
+[TextBox 36]:
+  P1: 이러한 문제를 해결하기 위해 새로운 접근이 필요합니다.
+
+=================== SLIDE 4 (Slide ID: 259) ===================
+[TextBox 29]:
+  P1: 목표
+[TextBox 30]:
+  P1: Goal
+[TextBox 31]:
+  P1: 01
+[TextBox 32]:
+  P1: 02
+[TextBox 33]:
+  P1: 03
+[TextBox 34]:
+  P1: 명확한 방향성을
+  P2: 설정하여
+  P3: 혼선을 줄입니다.
+[TextBox 35]:
+  P1: 불필요한 과정을
+  P2: 줄이고 실행 효율을
+  P3: 높입니다.
+[TextBox 36]:
+  P1: 측정 가능한
+  P2: 결과를
+  P3: 만들어냅니다.
+
+=================== SLIDE 5 (Slide ID: 260) ===================
+[TextBox 33]:
+  P1: 진행 과정
+[TextBox 34]:
+  P1: Process
+[TextBox 35]:
+  P1: 01
+[TextBox 36]:
+  P1: Research
+[TextBox 37]:
+  P1: Planning
+[TextBox 38]:
+  P1: Evaluation
+[TextBox 39]:
+  P1: Optimization
+[TextBox 40]:
+  P1: 02
+[TextBox 41]:
+  P1: 03
+[TextBox 42]:
+  P1: 04
+[TextBox 43]:
+  P1: 현황을 분석하고 핵심 문제를 정의합니다.
+[TextBox 44]:
+  P1: 목표에 맞는 실행 전략을 수립합니다.
+[TextBox 45]:
+  P1: 결과를 분석하고 다음 액션을 도출합니다.
+[TextBox 46]:
+  P1: 성과를 개선하고 완성도를 높입니다.
+
+=================== SLIDE 6 (Slide ID: 261) ===================
+[TextBox 50]:
+  P1: 개선 효과
+[TextBox 51]:
+  P1: Improvements
+[TextBox 52]:
+  P1: 기준이 명확하지 않아 의사결정이 지연됨
+[TextBox 53]:
+  P1: 방향 변경으로 반복적인 수정 발생
+[TextBox 54]:
+  P1: 커뮤니케이션 비용 증가
+[TextBox 55]:
+  P1: 명확한 기준 설정으로 의사결정 속도 향상
+[TextBox 56]:
+  P1: 불필요한 수정 감소로 효율적인 진행
+[TextBox 57]:
+  P1: 팀 간 공통 이해 형성
+
+=================== SLIDE 7 (Slide ID: 262) ===================
+[TextBox 38]:
+  P1: 성과 요약
+[TextBox 39]:
+  P1: Results Overview
+[TextBox 40]:
+  P1: 프로세스 개선 후 평균 처리 시간 30% 이상 감소
+[TextBox 41]:
+  P1: 주요 작업 단계에서 오류 발생률 유의미하게 감소
+[TextBox 42]:
+  P1: 사용자/내부 만족도 지표 지속적인 상승 추세
+
+=================== SLIDE 8 (Slide ID: 263) ===================
+[TextBox 36]:
+  P1: 중간 요약
+[TextBox 37]:
+  P1: Key Point
+[TextBox 38]:
+  P1: 구조화되지 않은 프로세스가 문제를 만든다
+[TextBox 39]:
+  P1: 단순한 구조가 실행 품질을 높인다
+[TextBox 40]:
+  P1: 명확한 기준이 실행 속도를 높인다
+[TextBox 41]:
+  P1: 지속적인 점검이 성과를 만든다
+
+=================== SLIDE 9 (Slide ID: 264) ===================
+[TextBox 38]:
+  P1: 제안
+[TextBox 39]:
+  P1: Solution
+[TextBox 40]:
+  P1: 핵심 목표와 과제를 기준으로 우선순위를 명확히 정의합니다.
+[TextBox 41]:
+  P1: 선택과 집중을 통해 리소스 낭비를 줄입니다.
+[TextBox 42]:
+  P1: 반복 작업을 최소화할 수 있도록 표준화된 구조를 설계합니다.
+[TextBox 43]:
+  P1: 불필요한 단계 제거로 실행 효율을 높입니다.
+[TextBox 44]:
+  P1: 실행 후 점검 과정을 통해 성과를 검증합니다.
+[TextBox 45]:
+  P1: 피드백을 반영해 지속적으로 개선합니다.
+[TextBox 46]:
+  P1: Solution A
+[TextBox 47]:
+  P1: Solution B
+[TextBox 48]:
+  P1: Solution C
+
+=================== SLIDE 10 (Slide ID: 265) ===================
+[TextBox 38]:
+  P1: 기대 효과
+[TextBox 39]:
+  P1: Result
+[TextBox 40]:
+  P1: 반복 작업 감소 및 불필요한 커뮤니케이션 최소화
+[TextBox 41]:
+  P1: 명확한 기준과 프로세스로 빠른 판단 가능
+[TextBox 42]:
+  P1: 담당자·상황에 관계없이 안정적인 품질 확보
+[TextBox 43]:
+  P1: 업무 효율 향상
+[TextBox 44]:
+  P1: 의사결정 시간 단축
+[TextBox 45]:
+  P1: 일관된 결과물 유지
+
+=================== SLIDE 11 (Slide ID: 266) ===================
+[TextBox 20]:
+  P1: 감사합니다.
+[TextBox 21]:
+  P1: THANK YOU!
+[TextBox 22]:
+  P1: 이수진 책임
+[TextBox 23]:
+  P1: hello@reallygreatsite.com

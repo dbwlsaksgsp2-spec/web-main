@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "C:/Users/poshi/.local/bin/uvx.exe",
+      "args": [
+        "workspace-mcp",
+        "--single-user",
+        "--tools",
+        "gmail",
+        "drive",
+        "sheets",
+        "docs",
+        "calendar",
+        "slides"
+      ],
+      "env": {
+        "GOOGLE_CLIENT_SECRET_PATH": "C:/Users/poshi/.gemini/credentials.json",
+        "USER_GOOGLE_EMAIL": "inchoriya@gmail.com",
+        "OAUTHLIB_INSECURE_TRANSPORT": "1"
+      }
+    }
+  }
+}

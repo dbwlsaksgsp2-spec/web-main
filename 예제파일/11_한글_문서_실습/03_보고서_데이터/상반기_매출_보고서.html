@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>상반기 매출 보고서</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+            color: #2D3748;
+            background-color: #FFFFFF;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .page {
+            position: relative;
+            width: 210mm;
+            height: 297mm;
+            box-sizing: border-box;
+            padding: 35mm 25mm 25mm 25mm;
+            page-break-after: always;
+            background-image: url('extracted_background.jpg');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+        /* Page 1: Cover Page */
+        .cover-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            padding-top: 40mm;
+            padding-bottom: 20mm;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .cover-title-box {
+            margin-top: 10mm;
+        }
+        .cover-tag {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #1F4E78;
+            letter-spacing: 2px;
+            margin-bottom: 5mm;
+            text-transform: uppercase;
+        }
+        .cover-title {
+            font-size: 32pt;
+            font-weight: 800;
+            color: #0F2537;
+            line-height: 1.3;
+            margin: 0 0 5mm 0;
+            border-bottom: 3px solid #1F4E78;
+            padding-bottom: 8mm;
+            display: inline-block;
+            width: 80%;
+        }
+        .cover-subtitle {
+            font-size: 16pt;
+            color: #4A5568;
+            font-weight: 400;
+            margin-top: 5mm;
+        }
+        .cover-meta {
+            margin-bottom: 15mm;
+            font-size: 12pt;
+            color: #4A5568;
+            line-height: 2;
+        }
+        .cover-meta table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+        .cover-meta td {
+            padding: 4px 15px;
+            text-align: left;
+        }
+        .cover-meta td.label {
+            font-weight: bold;
+            color: #1F4E78;
+            border-right: 1px solid #CBD5E0;
+            width: 80px;
+            text-align: right;
+        }
+        /* Page 2: Content Page */
+        .content-header {
+            border-bottom: 2px solid #1F4E78;
+            padding-bottom: 3mm;
+            margin-bottom: 6mm;
+        }
+        .content-title {
+            font-size: 20pt;
+            font-weight: bold;
+            color: #0F2537;
+            margin: 0;
+        }
+        .section-title {
+            font-size: 13pt;
+            font-weight: bold;
+            color: #1F4E78;
+            margin: 6mm 0 3mm 0;
+            display: flex;
+            align-items: center;
+        }
+        .section-title::before {
+            content: "■";
+            color: #1F4E78;
+            font-size: 10pt;
+            margin-right: 8px;
+        }
+        /* Summary Box */
+        .summary-box {
+            background-color: #F2F5F8;
+            border-left: 5px solid #1F4E78;
+            padding: 5mm 6mm;
+            margin-bottom: 6mm;
+            border-radius: 0 6px 6px 0;
+        }
+        .summary-title {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #0F2537;
+            margin-bottom: 3mm;
+        }
+        .summary-list {
+            margin: 0;
+            padding-left: 5mm;
+            font-size: 10pt;
+            line-height: 1.6;
+            color: #2D3748;
+        }
+        .summary-list li {
+            margin-bottom: 2mm;
+        }
+        /* Table Styles */
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9.5pt;
+            margin-bottom: 6mm;
+            text-align: center;
+        }
+        table.data-table th {
+            background-color: #1F4E78;
+            color: #FFFFFF;
+            font-weight: bold;
+            padding: 8px 4px;
+            border: 1px solid #CBD5E0;
+        }
+        table.data-table td {
+            padding: 7px 4px;
+            border: 1px solid #CBD5E0;
+        }
+        table.data-table tr:nth-child(even) {
+            background-color: #F8FAFC;
+        }
+        table.data-table tr.total-row {
+            background-color: #E2E8F0;
+            font-weight: bold;
+        }
+        /* Chart progress bars */
+        .chart-section {
+            display: flex;
+            flex-direction: column;
+            gap: 3mm;
+            background-color: #FCFDFE;
+            border: 1px solid #E2E8F0;
+            padding: 5mm;
+            border-radius: 6px;
+        }
+        .chart-row {
+            display: flex;
+            align-items: center;
+            font-size: 9.5pt;
+        }
+        .chart-label {
+            width: 130px;
+            font-weight: bold;
+            color: #2D3748;
+        }
+        .chart-bar-container {
+            flex-grow: 1;
+            height: 16px;
+            background-color: #EDF2F7;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 0 15px;
+            position: relative;
+        }
+        .chart-bar {
+            height: 100%;
+            border-radius: 8px;
+        }
+        .chart-bar.enterprise {
+            background-color: #1F4E78;
+        }
+        .chart-bar.premium {
+            background-color: #319795;
+        }
+        .chart-bar.basic {
+            background-color: #4A5568;
+        }
+        .chart-value {
+            width: 110px;
+            text-align: right;
+            font-weight: bold;
+            color: #0F2537;
+        }
+        .chart-pct {
+            width: 50px;
+            text-align: right;
+            font-weight: bold;
+            color: #1F4E78;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: Cover -->
+    <div class="page">
+        <div class="cover-container">
+            <div class="cover-title-box">
+                <div class="cover-tag">Business Report</div>
+                <h1 class="cover-title">상반기 매출 보고서</h1>
+                <div class="cover-subtitle">월별 매출 추이 및 제품별 비중 분석</div>
+            </div>
+            <div class="cover-meta">
+                <table>
+                    <tr>
+                        <td class="label">작성일자</td>
+                        <td>2026년 6월 19일</td>
+                    </tr>
+                    <tr>
+                        <td class="label">부 서</td>
+                        <td>경영지원팀</td>
+                    </tr>
+                    <tr>
+                        <td class="label">작성자</td>
+                        <td>관리자</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2: Report Content -->
+    <div class="page">
+        <div class="content-header">
+            <h2 class="content-title">2026년 상반기 매출 분석 결과</h2>
+        </div>
+        
+        <!-- 핵심 3줄 요약 -->
+        <div class="section-title">핵심 3줄 요약</div>
+        <div class="summary-box">
+            <ul class="summary-list">
+                <li><strong>총 매출 달성:</strong> 2026년 상반기 누적 매출액은 <strong>28,898,100원</strong>(총 판매 수량 <strong>675개</strong>)을 기록하며 안정적인 성장세를 보임.</li>
+                <li><strong>제품별 매출 비중:</strong> 단가가 높은 <strong>엔터프라이즈</strong> 제품군이 <strong>67.1%</strong>의 압도적인 비중을 차지하였으며, 프리미엄(24.7%), 베이직(8.2%) 순임.</li>
+                <li><strong>월별 판매 추이:</strong> 대형 기업 수주 및 엔터프라이즈 판매가 집중된 <strong>2월</strong>에 상반기 최대 매출(<strong>7,207,200원</strong>)을 달성하여 실적 피크를 견인함.</li>
+            </ul>
+        </div>
+
+        <!-- 월별 매출 추이 표 -->
+        <div class="section-title">상반기 월별 매출 추이</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 12%">구분</th>
+                    <th colspan="2">베이직</th>
+                    <th colspan="2">프리미엄</th>
+                    <th colspan="2">엔터프라이즈</th>
+                    <th colspan="2">합계</th>
+                </tr>
+                <tr>
+                    <th style="width: 10%">수량</th>
+                    <th style="width: 12%">매출액</th>
+                    <th style="width: 10%">수량</th>
+                    <th style="width: 12%">매출액</th>
+                    <th style="width: 10%">수량</th>
+                    <th style="width: 12%">매출액</th>
+                    <th style="width: 10%">수량</th>
+                    <th style="width: 12%">매출액</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1월</strong></td>
+                    <td>39</td>
+                    <td>386,100</td>
+                    <td>40</td>
+                    <td>1,188,000</td>
+                    <td>32</td>
+                    <td>3,168,000</td>
+                    <td><strong>111</strong></td>
+                    <td><strong>4,742,100</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>2월</strong></td>
+                    <td>60</td>
+                    <td>594,000</td>
+                    <td>56</td>
+                    <td>1,663,200</td>
+                    <td>50</td>
+                    <td>4,950,000</td>
+                    <td><strong>166</strong></td>
+                    <td><strong>7,207,200</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>3월</strong></td>
+                    <td>15</td>
+                    <td>148,500</td>
+                    <td>45</td>
+                    <td>1,336,500</td>
+                    <td>6</td>
+                    <td>594,000</td>
+                    <td><strong>66</strong></td>
+                    <td><strong>2,079,000</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>4월</strong></td>
+                    <td>57</td>
+                    <td>564,300</td>
+                    <td>20</td>
+                    <td>594,000</td>
+                    <td>58</td>
+                    <td>5,742,000</td>
+                    <td><strong>135</strong></td>
+                    <td><strong>6,900,300</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>5월</strong></td>
+                    <td>15</td>
+                    <td>148,500</td>
+                    <td>40</td>
+                    <td>1,188,000</td>
+                    <td>36</td>
+                    <td>3,564,000</td>
+                    <td><strong>91</strong></td>
+                    <td><strong>4,900,500</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>6월</strong></td>
+                    <td>53</td>
+                    <td>524,700</td>
+                    <td>39</td>
+                    <td>1,158,300</td>
+                    <td>14</td>
+                    <td>1,386,000</td>
+                    <td><strong>106</strong></td>
+                    <td><strong>3,069,000</strong></td>
+                </tr>
+                <tr class="total-row">
+                    <td>합계</td>
+                    <td>239</td>
+                    <td>2,366,100</td>
+                    <td>240</td>
+                    <td>7,128,000</td>
+                    <td>196</td>
+                    <td>19,404,000</td>
+                    <td>675</td>
+                    <td>28,898,100</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 제품별 매출 비중 시각화 -->
+        <div class="section-title">제품군별 매출액 비중</div>
+        <div class="chart-section">
+            <div class="chart-row">
+                <span class="chart-label">엔터프라이즈</span>
+                <div class="chart-bar-container">
+                    <div class="chart-bar enterprise" style="width: 67.1%;"></div>
+                </div>
+                <span class="chart-value">19,404,000원</span>
+                <span class="chart-pct">67.1%</span>
+            </div>
+            <div class="chart-row">
+                <span class="chart-label">프리미엄</span>
+                <div class="chart-bar-container">
+                    <div class="chart-bar premium" style="width: 24.7%;"></div>
+                </div>
+                <span class="chart-value">7,128,000원</span>
+                <span class="chart-pct">24.7%</span>
+            </div>
+            <div class="chart-row">
+                <span class="chart-label">베이직</span>
+                <div class="chart-bar-container">
+                    <div class="chart-bar basic" style="width: 8.2%;"></div>
+                </div>
+                <span class="chart-value">2,366,100원</span>
+                <span class="chart-pct">8.2%</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
