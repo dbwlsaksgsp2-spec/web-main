@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>시간을 넘는 너에게 - 여성향 비주얼 노벨</title>
+  <!-- Google Fonts: Gowun Batang for story, Noto Sans KR for UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=27">
+</head>
+<body>
+
+  <!-- PC View Outer Container (simulates phone device on desktop) -->
+  <div class="device-container">
+    <div class="phone-frame">
+      
+      <!-- Floating Cherry Blossom Particle System (Always active on top of background) -->
+      <div id="cherry-blossoms" class="particles-container"></div>
+      
+      <!-- Screen Transition Effect Overlay -->
+      <div id="screen-flash" class="screen-flash"></div>
+      <div id="screen-fade" class="screen-fade"></div>
+
+      <!-- Episode Transition Overlay (Pop-up at the start of each episode) -->
+      <div id="episode-overlay" class="episode-overlay-panel">
+        <div class="episode-card">
+          <span class="ep-badge">EPISODE</span>
+          <h2 id="ep-title-display">제 1화: 시간을 넘어서 - 만남</h2>
+          <div class="ep-divider"></div>
+          <span class="ep-tip">탭하여 계속하기</span>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- 1. TITLE SCREEN                                -->
+      <!-- ============================================== -->
+      <section id="title-screen" class="game-screen active">
+        <div class="title-bg"></div>
+        <div class="title-content">
+          <div class="title-logo">
+            <span class="logo-sub">벚꽃 아래 세 소년과...</span>
+            <h1 class="logo-main">시간을 넘는<br><span class="highlight">너에게</span></h1>
+          </div>
+          
+          <div class="title-menu">
+            <button id="btn-new-game" class="menu-btn primary"><i class="fa-solid fa-play"></i> 새로운 인연 시작</button>
+            <button id="btn-continue" class="menu-btn secondary" disabled><i class="fa-solid fa-clock-rotate-left"></i> 자동저장 이어하기</button>
+            <button id="btn-open-gallery" class="menu-btn secondary"><i class="fa-solid fa-image"></i> 추억 보관함 (갤러리)</button>
+          </div>
+          
+          <div class="title-footer">
+            <p>© 2026 Antigravity Studio. All Rights Reserved.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- 2. LOBBY / WAITING SCREEN (5 tabs architecture)-->
+      <!-- ============================================== -->
+      <section id="lobby-screen" class="game-screen">
+        <!-- Lobby Background -->
+        <div class="lobby-background bg-sunset"></div>
+        
+        <!-- Lobby HUD (Affinity stats, unlocked ep, gold points) -->
+        <div class="lobby-hud">
+          <div class="lobby-progress-info">
+            <span class="progress-badge">진행 상황</span>
+            <span id="lobby-unlocked-ep" class="progress-ep-name">제 1화 시작 대기 중</span>
+          </div>
+          
+          <!-- Affinity Summary (3 Boys) -->
+          <div class="lobby-affinity-summary">
+            <div class="lobby-affinity-item jiho">
+              <span class="lbl">지호</span>
+              <span id="lobby-val-jiho" class="val">0</span>
+            </div>
+            <div class="lobby-affinity-item sunwoo">
+              <span class="lbl">선우</span>
+              <span id="lobby-val-sunwoo" class="val">0</span>
+            </div>
+            <div class="lobby-affinity-item doyun">
+              <span class="lbl">도윤</span>
+              <span id="lobby-val-doyun" class="val">0</span>
+            </div>
+          </div>
+          
+          <div class="lobby-top-right-group">
+            <!-- Points display -->
+            <div class="lobby-points-display">
+              <i class="fa-solid fa-coins gold-coin"></i>
+              <span id="lobby-points-val">0</span> P
+            </div>
+            <!-- Title home button -->
+            <button id="btn-lobby-to-title" class="lobby-hud-home-btn" title="타이틀 화면으로"><i class="fa-solid fa-house"></i></button>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB CONTAINER (Lobby, Closet, Job, Room, Album) -->
+        <!-- ========================================== -->
+        <div class="lobby-tabs-viewport">
+          
+          <!-- TAB 1: MAIN LOBBY -->
+          <div id="lobby-tab-main" class="lobby-tab-content active">
+            <!-- Interactive Lobby Characters Area -->
+            <div class="lobby-character-area">
+              <button id="btn-lobby-prev" class="lobby-arrow-btn left" aria-label="이전 남주인공"><i class="fa-solid fa-chevron-left"></i></button>
+              
+              <div class="lobby-character-viewport">
+                <!-- Standing Sprite Wrapper with decorations absolute layers -->
+                <div class="sprite-wrapper">
+                  <div class="lobby-char-container">
+                    <img id="lobby-char-sprite" class="lobby-char-sprite active" src="assets/jiho.png" alt="남주인공 스탠딩">
+                    <!-- Live Accessory Decoration Overlay Layers -->
+                    <div id="lobby-decor-glasses" class="decor-layer decor-glasses"></div>
+                    <div id="lobby-decor-ears" class="decor-layer decor-ears"></div>
+                    <div id="lobby-decor-scarf" class="decor-layer decor-scarf"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <button id="btn-lobby-next" class="lobby-arrow-btn right" aria-label="다음 남주인공"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+            <!-- Speech Bubble -->
+            <div id="lobby-talk-bubble" class="lobby-talk-bubble">
+              <span id="lobby-talk-name" class="talk-name">지호</span>
+              <p id="lobby-talk-text" class="talk-text">"나한테 무슨 할 말이라도 있나?"</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="lobby-actions">
+              <button id="btn-play-episode" class="menu-btn primary"><i class="fa-solid fa-heart-pulse"></i> 제 1화 시작하기</button>
+            </div>
+          </div>
+
+          <!-- TAB 2: CLOSET (옷장) -->
+          <div id="lobby-tab-closet" class="lobby-tab-content">
+            <div class="tab-header-title">
+              <h3><i class="fa-solid fa-shirt"></i> 옷장 및 소품샵</h3>
+              <p>알바로 모은 포인트로 소품을 구매하여 입혀주세요.</p>
+            </div>
+            
+            <!-- Character Preview Area inside Closet -->
+            <div class="closet-preview-container">
+              <div class="closet-sprite-wrapper">
+                <div class="closet-char-container">
+                  <img id="closet-char-sprite" class="closet-char-sprite" src="assets/jiho.png" alt="남주인공 스탠딩">
+                  <div id="closet-decor-glasses" class="decor-layer decor-glasses"></div>
+                  <div id="closet-decor-ears" class="decor-layer decor-ears"></div>
+                  <div id="closet-decor-scarf" class="decor-layer decor-scarf"></div>
+                </div>
+              </div>
+              <div class="closet-preview-name">
+                <span id="closet-char-name">한지호</span>
+              </div>
+            </div>
+            
+            <!-- Accessories items list -->
+            <div class="closet-items-grid">
+              <div class="closet-item" data-item="glasses">
+                <div class="item-icon-wrapper"><i class="fa-solid fa-glasses"></i></div>
+                <div class="item-details">
+                  <span class="item-name">스마트 안경</span>
+                  <span class="item-price">100 P</span>
+                </div>
+                <button class="btn-item-action" data-item="glasses">구매하기</button>
+              </div>
+              <div class="closet-item" data-item="ears">
+                <div class="item-icon-wrapper"><i class="fa-solid fa-cat"></i></div>
+                <div class="item-details">
+                  <span class="item-name">귀여운 고양이 귀</span>
+                  <span class="item-price">200 P</span>
+                </div>
+                <button class="btn-item-action" data-item="ears">구매하기</button>
+              </div>
+              <div class="closet-item" data-item="scarf">
+                <div class="item-icon-wrapper"><i class="fa-solid fa-ribbon"></i></div>
+                <div class="item-details">
+                  <span class="item-name">붉은 목도리</span>
+                  <span class="item-price">300 P</span>
+                </div>
+                <button class="btn-item-action" data-item="scarf">구매하기</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: PART-TIME JOB (알바) -->
+          <div id="lobby-tab-job" class="lobby-tab-content">
+            <div class="tab-header-title">
+              <h3><i class="fa-solid fa-briefcase"></i> 방과 후 아르바이트</h3>
+              <p>아르바이트를 완료하고 포인트(P)를 획득하세요.</p>
+            </div>
+            
+            <div class="job-list">
+              <div class="job-card" data-job="cafe">
+                <div class="job-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                <div class="job-info">
+                  <span class="job-title">베이커리 카페 알바</span>
+                  <span class="job-reward">+30 P (소요시간 5초)</span>
+                  <div class="job-progress-bar"><div id="progress-job-cafe" class="fill"></div></div>
+                </div>
+                <button class="btn-start-job" data-job="cafe">알바시작</button>
+              </div>
+              
+              <div class="job-card" data-job="library">
+                <div class="job-icon"><i class="fa-solid fa-book"></i></div>
+                <div class="job-info">
+                  <span class="job-title">도서실 서적 정리</span>
+                  <span class="job-reward">+80 P (소요시간 10초)</span>
+                  <div class="job-progress-bar"><div id="progress-job-library" class="fill"></div></div>
+                </div>
+                <button class="btn-start-job" data-job="library">알바시작</button>
+              </div>
+              
+              <div class="job-card" data-job="flower">
+                <div class="job-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <div class="job-info">
+                  <span class="job-title">꽃집 카운터 보조</span>
+                  <span class="job-reward">+150 P (소요시간 15초)</span>
+                  <div class="job-progress-bar"><div id="progress-job-flower" class="fill"></div></div>
+                </div>
+                <button class="btn-start-job" data-job="flower">알바시작</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: PERSONAL ROOM (개인실) -->
+          <div id="lobby-tab-room" class="lobby-tab-content">
+            <div class="tab-header-title">
+              <h3><i class="fa-solid fa-door-open"></i> 나의 개인실</h3>
+              <p>소년을 방으로 초대해 선물을 주고 호감도를 높여보세요.</p>
+            </div>
+            
+            <!-- Invite selectors -->
+            <div class="room-invite-selectors">
+              <button class="btn-invite-char active" data-char="jiho">지호 초대</button>
+              <button class="btn-invite-char" data-char="sunwoo">선우 초대</button>
+              <button class="btn-invite-char" data-char="doyun">도윤 초대</button>
+            </div>
+            
+            <!-- Room view screen -->
+            <div class="room-view-container">
+              <!-- Gift shop toggle button -->
+              <button id="btn-room-gift-open" class="room-gift-toggle-btn"><i class="fa-solid fa-gift"></i> 선물하기</button>
+
+              <div class="room-sprite-viewport">
+                <!-- Clickable touch zone over character -->
+                <div id="room-touch-zone" class="room-touch-zone"></div>
+                <img id="room-char-sprite" class="room-char-sprite" src="assets/jiho.png" alt="초대된 남주인공">
+              </div>
+              
+              <!-- Personal Room dialogue display -->
+              <div id="room-talk-bubble" class="room-talk-bubble">
+                <span id="room-talk-name">지호</span>
+                <p id="room-talk-text">"무슨 볼일이라도...?" (선물을 주거나 소년을 터치해 보세요!)</p>
+              </div>
+
+              <!-- Sliding Gift Shop Drawer Overlay -->
+              <div id="room-gift-panel" class="room-gift-panel">
+                <div class="gift-panel-header">
+                  <h4><i class="fa-solid fa-gift"></i> 선물 가게</h4>
+                  <div class="gift-header-right">
+                    <span class="gift-panel-points"><i class="fa-solid fa-coins gold-coin"></i> <span id="room-gift-points-val">0</span> P</span>
+                    <button id="btn-room-gift-close" class="btn-gift-close"><i class="fa-solid fa-xmark"></i></button>
+                  </div>
+                </div>
+                <div class="gift-items-list">
+                  <div class="gift-card" data-gift="chocolate">
+                    <div class="gift-icon-wrapper"><i class="fa-solid fa-cookie"></i></div>
+                    <div class="gift-details">
+                      <span class="gift-name">수제 초콜릿</span>
+                      <span class="gift-benefit">호감도 +15 (50 P)</span>
+                    </div>
+                    <button class="btn-buy-gift" data-gift="chocolate">선물</button>
+                  </div>
+                  <div class="gift-card" data-gift="planner">
+                    <div class="gift-icon-wrapper"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div class="gift-details">
+                      <span class="gift-name">스터디 플래너</span>
+                      <span class="gift-benefit">지호 선호 +30 (80 P)</span>
+                    </div>
+                    <button class="btn-buy-gift" data-gift="planner">선물</button>
+                  </div>
+                  <div class="gift-card" data-gift="drink">
+                    <div class="gift-icon-wrapper"><i class="fa-solid fa-bottle-water"></i></div>
+                    <div class="gift-details">
+                      <span class="gift-name">이온 음료</span>
+                      <span class="gift-benefit">선우 선호 +25 (60 P)</span>
+                    </div>
+                    <button class="btn-buy-gift" data-gift="drink">선물</button>
+                  </div>
+                  <div class="gift-card" data-gift="cd">
+                    <div class="gift-icon-wrapper"><i class="fa-solid fa-compact-disc"></i></div>
+                    <div class="gift-details">
+                      <span class="gift-name">클래식 CD</span>
+                      <span class="gift-benefit">도윤 선호 +35 (100 P)</span>
+                    </div>
+                    <button class="btn-buy-gift" data-gift="cd">선물</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 5: ALBUM (앨범) -->
+          <div id="lobby-tab-album" class="lobby-tab-content">
+            <div class="tab-header-title">
+              <h3><i class="fa-solid fa-images"></i> 나의 인연 앨범</h3>
+              <p>그동안 달성하고 해금한 엔딩 컬렉션입니다.</p>
+            </div>
+            
+            <!-- Integrated Grid from Gallery -->
+            <div class="gallery-grid">
+              <div class="gallery-item" data-ending="jiho_happy">
+                <div class="img-wrapper locked">
+                  <img src="assets/bg_park.png" alt="지호 해피 엔딩">
+                  <div class="lock-overlay"><i class="fa-solid fa-lock"></i></div>
+                </div>
+                <span class="ending-title">한지호 해피 엔딩</span>
+                <p class="ending-desc">너의 봄이 되어줄게</p>
+              </div>
+              <div class="gallery-item" data-ending="jiho_normal">
+                <div class="img-wrapper locked">
+                  <img src="assets/bg_classroom.png" alt="지호 노멀 엔딩">
+                  <div class="lock-overlay"><i class="fa-solid fa-lock"></i></div>
+                </div>
+                <span class="ending-title">한지호 노멀 엔딩</span>
+                <p class="ending-desc">서투른 첫발자국</p>
+              </div>
+              <div class="gallery-item" data-ending="sunwoo_happy">
+                <div class="img-wrapper locked">
+                  <img src="assets/bg_park.png" alt="선우 해피 엔딩">
+                  <div class="lock-overlay"><i class="fa-solid fa-lock"></i></div>
+                </div>
+                <span class="ending-title">서선우 해피 엔딩</span>
+                <p class="ending-desc">봄바람의 약속</p>
+              </div>
+              <div class="gallery-item" data-ending="sunwoo_normal">
+                <div class="img-wrapper locked">
+                  <img src="assets/bg_classroom.png" alt="선우 노멀 엔딩">
+                  <div class="lock-overlay"><i class="fa-solid fa-lock"></i></div>
+                </div>
+                <span class="ending-title">서선우 노멀 엔딩</span>
+                <p class="ending-desc">우정과 사랑 그 너머</p>
+              </div>
+              <div class="gallery-item" data-ending="doyun_happy">
+                <div class="img-wrapper locked">
+                  <img src="assets/bg_park.png" alt="도윤 해피 엔딩">
+                  <div class="lock-overlay"><i class="fa-solid fa-lock"></i></div>
+                </div>
+                <span class="ending-title">강도윤 해피 엔딩</span>
+                <p class="ending-desc">평생의 앙상블</p>
+              </div>
+              <div class="gallery-item" data-ending="doyun_normal">
+                <div class="img-wrapper locked">
+                  <img src="assets/bg_classroom.png" alt="도윤 노멀 엔딩">
+                  <div class="lock-overlay"><i class="fa-solid fa-lock"></i></div>
+                </div>
+                <span class="ending-title">강도윤 노멀 엔딩</span>
+                <p class="ending-desc">잔잔한 템포로</p>
+              </div>
+              <div class="gallery-item" data-ending="solo">
+                <div class="img-wrapper locked">
+                  <img src="assets/bg_sunset.png" alt="솔로 엔딩">
+                  <div class="lock-overlay"><i class="fa-solid fa-lock"></i></div>
+                </div>
+                <span class="ending-title">솔로 엔딩</span>
+                <p class="ending-desc">내 삶의 주인공은 바로 나</p>
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- end .lobby-tabs-viewport -->
+
+        <!-- ============================================== -->
+        <!-- BOTTOM NAVIGATION TAB BAR                      -->
+        <!-- ============================================== -->
+        <div class="bottom-nav-bar">
+          <button class="nav-tab active" data-tab="main">
+            <i class="fa-solid fa-couch"></i>
+            <span>로비</span>
+          </button>
+          <button class="nav-tab" data-tab="closet">
+            <i class="fa-solid fa-shirt"></i>
+            <span>옷장</span>
+          </button>
+          <button class="nav-tab" data-tab="job">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>알바</span>
+          </button>
+          <button class="nav-tab" data-tab="room">
+            <i class="fa-solid fa-door-open"></i>
+            <span>개인실</span>
+          </button>
+          <button class="nav-tab" data-tab="album">
+            <i class="fa-solid fa-images"></i>
+            <span>앨범</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ============================================== -->
+      <!-- 3. GAMEPLAY SCREEN                             -->
+      <!-- ============================================== -->
+      <section id="game-screen" class="game-screen">
+        <!-- Dynamic Background Container -->
+        <div id="game-bg" class="game-background bg-classroom"></div>
+        
+        <!-- Quick Settings & HUD -->
+        <div class="game-hud">
+          <button id="btn-show-log" class="hud-btn" title="로그 보기"><i class="fa-solid fa-scroll"></i> LOG</button>
+          <button id="btn-open-menu" class="hud-btn" title="메뉴 열기"><i class="fa-solid fa-bars"></i> MENU</button>
+        </div>
+
+        <!-- Affinity HUD (3 Male Leads) -->
+        <div class="affinity-hud">
+          <div class="affinity-bar jiho">
+            <span class="char-name">지호</span>
+            <div class="progress-track"><div id="hud-affinity-jiho" class="progress-fill" style="width: 0%"></div></div>
+            <span id="hud-val-jiho" class="affinity-val">0</span>
+          </div>
+          <div class="affinity-bar sunwoo">
+            <span class="char-name">선우</span>
+            <div class="progress-track"><div id="hud-affinity-sunwoo" class="progress-fill" style="width: 0%"></div></div>
+            <span id="hud-val-sunwoo" class="affinity-val">0</span>
+          </div>
+          <div class="affinity-bar doyun">
+            <span class="char-name">도윤</span>
+            <div class="progress-track"><div id="hud-affinity-doyun" class="progress-fill" style="width: 0%"></div></div>
+            <span id="hud-val-doyun" class="affinity-val">0</span>
+          </div>
+        </div>
+
+        <!-- Character Standings Render Area -->
+        <div class="character-container">
+          <!-- Character Sprites (3 Boys with Accessory overlays) -->
+          <div id="wrapper-sprite-jiho" class="char-sprite-wrapper">
+            <img id="char-sprite-jiho" class="char-sprite" src="assets/jiho.png" alt="한지호">
+            <div id="game-decor-jiho-glasses" class="decor-layer decor-glasses"></div>
+            <div id="game-decor-jiho-ears" class="decor-layer decor-ears"></div>
+            <div id="game-decor-jiho-scarf" class="decor-layer decor-scarf"></div>
+          </div>
+          
+          <div id="wrapper-sprite-sunwoo" class="char-sprite-wrapper">
+            <img id="char-sprite-sunwoo" class="char-sprite" src="assets/sunwoo.png" alt="서선우">
+            <div id="game-decor-sunwoo-glasses" class="decor-layer decor-glasses"></div>
+            <div id="game-decor-sunwoo-ears" class="decor-layer decor-ears"></div>
+            <div id="game-decor-sunwoo-scarf" class="decor-layer decor-scarf"></div>
+          </div>
+          
+          <div id="wrapper-sprite-doyun" class="char-sprite-wrapper">
+            <img id="char-sprite-doyun" class="char-sprite" src="assets/doyun.png" alt="강도윤">
+            <div id="game-decor-doyun-glasses" class="decor-layer decor-glasses"></div>
+            <div id="game-decor-doyun-ears" class="decor-layer decor-ears"></div>
+            <div id="game-decor-doyun-scarf" class="decor-layer decor-scarf"></div>
+          </div>
+        </div>
+
+        <!-- Dialogue & Narrative Box -->
+        <div id="dialogue-box" class="dialogue-box">
+          <div class="dialogue-header">
+            <span id="speaker-name" class="speaker-name">지호</span>
+          </div>
+          <div class="dialogue-body">
+            <p id="dialogue-text" class="dialogue-text">로딩 중...</p>
+          </div>
+          <!-- Clickable area to advance or indicator -->
+          <div class="dialogue-next-indicator">
+            <i class="fa-solid fa-caret-down bounce"></i>
+          </div>
+        </div>
+
+        <!-- Dialogue Advancer Invisible Overlay -->
+        <div id="dialogue-advancer" class="dialogue-advancer-overlay"></div>
+
+        <!-- Choices Pop-up Overlay -->
+        <div id="choice-overlay" class="choice-overlay">
+          <div class="choice-container">
+            <!-- Dynamically populated choices buttons go here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- 5. IN-GAME MENU MODAL OVERLAYS                 -->
+      <!-- ============================================== -->
+      
+      <!-- Common Close Overlay Trigger -->
+      <div id="menu-overlay-backdrop" class="menu-overlay-backdrop"></div>
+
+      <!-- Main Pause Menu -->
+      <div id="modal-pause-menu" class="menu-modal">
+        <div class="modal-header">
+          <h2><i class="fa-solid fa-gear"></i> 시스템 메뉴</h2>
+          <button class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body pause-buttons">
+          <div class="autosave-notice">
+            <i class="fa-solid fa-circle-check"></i> 이 게임은 <strong>에피소드 완료 시 자동 저장</strong>됩니다. 진행 도중 나갈 경우 해당 에피소드의 처음부터 시작됩니다.
+          </div>
+          <button id="btn-menu-log" class="modal-nav-btn"><i class="fa-solid fa-book-open"></i> 지난 대화 (Log)</button>
+          <button id="btn-menu-restart" class="modal-nav-btn warning"><i class="fa-solid fa-arrows-rotate"></i> 이번 에피소드 처음부터</button>
+          <button id="btn-menu-lobby" class="modal-nav-btn danger"><i class="fa-solid fa-couch"></i> 대기화면으로 (Lobby)</button>
+        </div>
+      </div>
+
+      <!-- Dialogue History Log Modal -->
+      <div id="modal-log" class="menu-modal large">
+        <div class="modal-header">
+          <h2><i class="fa-solid fa-scroll"></i> 지난 이야기 로그</h2>
+          <button class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="log-content-area" class="modal-body scrollable-log">
+          <!-- Dialogue rows appended here dynamically -->
+        </div>
+      </div>
+
+      <!-- Gallery (Legacy Modal, kept for compatibility if referenced, but now album tab is main) -->
+      <div id="modal-gallery" class="menu-modal large">
+        <div class="modal-header">
+          <h2><i class="fa-solid fa-heart"></i> 추억 보관함 (엔딩 도감)</h2>
+          <button class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <!-- Populated by script, same as album tab -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module" src="script.js?v=7"></script>
+</body>
+</html>
