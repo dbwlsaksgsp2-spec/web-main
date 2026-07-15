@@ -59,6 +59,26 @@
       </section>
 
       <!-- ============================================== -->
+      <!-- 1.5 NAME INPUT SCREEN                          -->
+      <!-- ============================================== -->
+      <section id="name-input-screen" class="game-screen">
+        <div class="name-input-bg"></div>
+        <div class="name-input-content">
+          <div class="name-input-logo">
+            <span class="logo-sub">벚꽃 아래 나를 불러줄 이름은...</span>
+            <h1 class="logo-main">이름을 입력하세요</h1>
+          </div>
+          
+          <div class="name-input-box-wrapper">
+            <input type="text" id="input-player-name" placeholder="이름을 입력하세요 (최대 6자)" maxlength="6">
+            <button id="btn-submit-name" class="menu-btn primary"><i class="fa-solid fa-check"></i> 결정</button>
+          </div>
+          
+          <p class="name-input-hint">입력하지 않으면 기본 이름인 '은하'로 진행됩니다.</p>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
       <!-- 2. LOBBY / WAITING SCREEN (5 tabs architecture)-->
       <!-- ============================================== -->
       <section id="lobby-screen" class="game-screen">
@@ -483,6 +503,31 @@
         <div id="choice-overlay" class="choice-overlay">
           <div class="choice-container">
             <!-- Dynamically populated choices buttons go here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- 4. EPISODE CLEAR SCREEN                        -->
+      <!-- ============================================== -->
+      <section id="episode-clear-screen" class="game-screen">
+        <div class="clear-screen-container">
+          <div class="clear-badge">
+            <span class="clear-badge-text">EPISODE CLEARED</span>
+          </div>
+          <h2 id="clear-episode-title" class="clear-title">제 1화: 시간을 넘어서 - 만남</h2>
+          <div class="clear-decoration">
+            <div class="clear-line"></div>
+            <i class="fa-solid fa-heart clear-heart"></i>
+            <div class="clear-line"></div>
+          </div>
+          <div class="clear-stats-summary">
+            <p class="clear-subtitle">성공적으로 이야기를 완료했습니다.</p>
+            <p class="clear-save-notice"><i class="fa-solid fa-circle-check"></i> 진행 상황이 자동으로 저장되었습니다.</p>
+          </div>
+          <div class="clear-tap-prompt">
+            <span>화면을 터치하여 대기화면으로 이동</span>
+            <i class="fa-solid fa-chevron-right prompt-arrow animate-arrow"></i>
           </div>
         </div>
       </section>

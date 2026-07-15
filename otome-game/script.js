@@ -14,6 +14,7 @@ let state = {
   historyLog: [],
   unlockedEpisode: 'ep1', // Tracks the furthest unlocked episode
   lobbyCharacter: 'jiho', // Active lobby character
+  playerName: '은하',
   
   // New 5-Tab System State
   activeLobbyTab: 'main', // 'main', 'closet', 'job', 'room', 'album'
@@ -146,6 +147,11 @@ const DOM = {
   titleScreen: document.getElementById('title-screen'),
   lobbyScreen: document.getElementById('lobby-screen'),
   gameScreen: document.getElementById('game-screen'),
+  episodeClearScreen: document.getElementById('episode-clear-screen'),
+  clearEpisodeTitle: document.getElementById('clear-episode-title'),
+  nameInputScreen: document.getElementById('name-input-screen'),
+  inputPlayerName: document.getElementById('input-player-name'),
+  btnSubmitName: document.getElementById('btn-submit-name'),
   
   // Episode Transition Overlay
   episodeOverlay: document.getElementById('episode-overlay'),
@@ -290,11 +296,33 @@ function createPetal() {
 // ==========================================================================
 function setupEventListeners() {
   // Title Screen Buttons
-  DOM.btnNewGame.addEventListener('click', () => startNewGame());
+  DOM.btnNewGame.addEventListener('click', () => {
+    playTransition('fade', () => {
+      showScreen(DOM.nameInputScreen);
+    });
+  });
+  
+  // Name Input Screen Actions
+  if (DOM.btnSubmitName) {
+    DOM.btnSubmitName.addEventListener('click', () => {
+      const name = DOM.inputPlayerName.value.trim() || '은하';
+      startNewGame(name);
+    });
+  }
+  
+  if (DOM.inputPlayerName) {
+    DOM.inputPlayerName.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        const name = DOM.inputPlayerName.value.trim() || '은하';
+        startNewGame(name);
+      }
+    });
+  }
+
   DOM.btnContinue.addEventListener('click', () => loadLastSave());
   DOM.btnOpenGallery.addEventListener('click', () => {
     // Open Album Tab inside Lobby instead of legacy modal
-    startNewGame();
+    startNewGame('은하');
     setTimeout(() => switchTab('album'), 500);
   });
   
@@ -393,6 +421,15 @@ function setupEventListeners() {
     DOM.episodeOverlay.classList.remove('active');
     renderStep();
   });
+
+  // Episode Clear Screen Click
+  if (DOM.episodeClearScreen) {
+    DOM.episodeClearScreen.addEventListener('click', () => {
+      playTransition('fade', () => {
+        enterLobby();
+      });
+    });
+  }
   
   // Backdrop closer
   DOM.backdrop.addEventListener('click', () => closeAllModals());
@@ -409,7 +446,7 @@ function checkAutosaveExists() {
 // ==========================================================================
 // SCREEN NAVIGATION FLOW
 // ==========================================================================
-function startNewGame() {
+function startNewGame(customName) {
   state = {
     currentScene: 'ep1',
     stepIndex: 0,
@@ -417,6 +454,7 @@ function startNewGame() {
     historyLog: [],
     unlockedEpisode: 'ep1',
     lobbyCharacter: 'jiho',
+    playerName: customName || '은하',
     
     // Tab System States
     activeLobbyTab: 'main',
@@ -447,6 +485,8 @@ function showScreen(screenEl) {
   DOM.titleScreen.classList.remove('active');
   DOM.lobbyScreen.classList.remove('active');
   DOM.gameScreen.classList.remove('active');
+  if (DOM.episodeClearScreen) DOM.episodeClearScreen.classList.remove('active');
+  if (DOM.nameInputScreen) DOM.nameInputScreen.classList.remove('active');
   screenEl.classList.add('active');
   
   if (screenEl === DOM.titleScreen) {
@@ -572,7 +612,7 @@ function renderLobbyCharacter() {
     
     // Set custom dialogue quote
     const quoteIdx = lobbyQuoteIndices[state.lobbyCharacter];
-    DOM.lobbyTalkText.innerText = LOBBY_QUOTES[state.lobbyCharacter][quoteIdx];
+    DOM.lobbyTalkText.innerText = LOBBY_QUOTES[state.lobbyCharacter][quoteIdx].replace(/OO/g, state.playerName);
     
     // Render equipped accessories
     renderAccessoriesOverlays(state.lobbyCharacter, 'lobby');
@@ -594,7 +634,7 @@ function cycleLobbyCharacterQuote() {
   currentQuoteIdx = (currentQuoteIdx + 1) % quotes.length;
   lobbyQuoteIndices[state.lobbyCharacter] = currentQuoteIdx;
   
-  DOM.lobbyTalkText.innerText = quotes[currentQuoteIdx];
+  DOM.lobbyTalkText.innerText = quotes[currentQuoteIdx].replace(/OO/g, state.playerName);
 }
 
 // Start current unlocked episode
@@ -874,7 +914,7 @@ function touchLobbyBoyInRoom() {
   quoteIdx = (quoteIdx + 1) % quotes.length;
   roomQuoteIndices[state.roomCharacter] = quoteIdx;
   
-  DOM.roomTalkText.innerText = quotes[quoteIdx];
+  DOM.roomTalkText.innerText = quotes[quoteIdx].replace(/OO/g, state.playerName);
 }
 
 function toggleRoomGiftPanel(isOpen) {
@@ -905,7 +945,7 @@ function giveGiftToCharacter(giftId) {
     
     // Display custom reaction text
     const reaction = GIFT_REACTIONS[state.roomCharacter][giftId];
-    DOM.roomTalkText.innerText = reaction;
+    DOM.roomTalkText.innerText = reaction.replace(/OO/g, state.playerName);
     
     // Update displays
     if (DOM.roomGiftPointsVal) DOM.roomGiftPointsVal.innerText = state.points;
@@ -992,6 +1032,7 @@ function autosaveEpisodeCleared() {
     unlockedAccessories: state.unlockedAccessories,
     equippedAccessories: state.equippedAccessories,
     roomCharacter: state.roomCharacter,
+    playerName: state.playerName,
     
     timestamp: Date.now()
   };
@@ -1014,6 +1055,7 @@ function loadLastSave() {
   state.unlockedAccessories = saveData.unlockedAccessories || [];
   state.equippedAccessories = saveData.equippedAccessories || { jiho: [], sunwoo: [], doyun: [] };
   state.roomCharacter = saveData.roomCharacter || 'jiho';
+  state.playerName = saveData.playerName || '은하';
   
   state.currentScene = saveData.unlockedEpisode;
   state.stepIndex = 0;
@@ -1093,49 +1135,61 @@ function renderStep() {
 
 // Update Character sprites standing state
 function updateCharacterSprites(step) {
-  DOM.charJiho.classList.remove('active', 'speaking', 'silent', 'anim-shake', 'anim-bounce');
-  DOM.charSunwoo.classList.remove('active', 'speaking', 'silent', 'anim-shake', 'anim-bounce');
-  DOM.charDoyun.classList.remove('active', 'speaking', 'silent', 'anim-shake', 'anim-bounce');
+  // 1. Reset all animation and expression classes
+  DOM.charJiho.classList.remove('active', 'speaking', 'silent', 'anim-shake', 'anim-bounce', 'expr-normal', 'expr-smile', 'expr-blush', 'expr-annoyed', 'expr-sad');
+  DOM.charSunwoo.classList.remove('active', 'speaking', 'silent', 'anim-shake', 'anim-bounce', 'expr-normal', 'expr-smile', 'expr-blush', 'expr-annoyed', 'expr-sad');
+  DOM.charDoyun.classList.remove('active', 'speaking', 'silent', 'anim-shake', 'anim-bounce', 'expr-normal', 'expr-smile', 'expr-blush', 'expr-annoyed', 'expr-sad');
+  
+  DOM.charJiho.style.filter = '';
+  DOM.charSunwoo.style.filter = '';
+  DOM.charDoyun.style.filter = '';
   
   DOM.wrapperJiho.style.display = 'none';
   DOM.wrapperSunwoo.style.display = 'none';
   DOM.wrapperDoyun.style.display = 'none';
   
   const activeChar = step.character;
+  const expr = step.expression || 'normal';
   
   if (activeChar === 'jiho') {
     DOM.wrapperJiho.style.display = 'flex';
     DOM.wrapperJiho.className = 'char-sprite-wrapper active-jiho';
-    DOM.charJiho.classList.add('active', 'speaking');
-    renderAccessoriesOverlays('jiho', 'game');
+    DOM.charJiho.classList.add('active', 'speaking', `expr-${expr}`);
     
-    if (step.expression === 'smile') {
-      DOM.charJiho.style.filter = 'drop-shadow(0 10px 20px rgba(140, 180, 255, 0.4)) brightness(1.05) saturate(1.1)';
-    } else {
-      DOM.charJiho.style.filter = '';
+    let srcPath = 'assets/jiho.png';
+    if (expr !== 'normal') {
+      srcPath = `assets/jiho_${expr}.png`;
     }
+    if (DOM.charJiho.getAttribute('src') !== srcPath) {
+      DOM.charJiho.src = srcPath;
+    }
+    renderAccessoriesOverlays('jiho', 'game');
   } else if (activeChar === 'sunwoo') {
     DOM.wrapperSunwoo.style.display = 'flex';
     DOM.wrapperSunwoo.className = 'char-sprite-wrapper active-sunwoo';
-    DOM.charSunwoo.classList.add('active', 'speaking');
-    renderAccessoriesOverlays('sunwoo', 'game');
+    DOM.charSunwoo.classList.add('active', 'speaking', `expr-${expr}`);
     
-    if (step.expression === 'smile') {
-      DOM.charSunwoo.style.filter = 'drop-shadow(0 10px 20px rgba(255, 166, 140, 0.4)) brightness(1.05) saturate(1.1)';
-    } else {
-      DOM.charSunwoo.style.filter = '';
+    let srcPath = 'assets/sunwoo.png';
+    if (expr !== 'normal') {
+      srcPath = `assets/sunwoo_${expr}.png`;
     }
+    if (DOM.charSunwoo.getAttribute('src') !== srcPath) {
+      DOM.charSunwoo.src = srcPath;
+    }
+    renderAccessoriesOverlays('sunwoo', 'game');
   } else if (activeChar === 'doyun') {
     DOM.wrapperDoyun.style.display = 'flex';
     DOM.wrapperDoyun.className = 'char-sprite-wrapper active-doyun';
-    DOM.charDoyun.classList.add('active', 'speaking');
-    renderAccessoriesOverlays('doyun', 'game');
+    DOM.charDoyun.classList.add('active', 'speaking', `expr-${expr}`);
     
-    if (step.expression === 'smile') {
-      DOM.charDoyun.style.filter = 'drop-shadow(0 10px 20px rgba(207, 207, 214, 0.4)) brightness(1.05) saturate(1.1)';
-    } else {
-      DOM.charDoyun.style.filter = '';
+    let srcPath = 'assets/doyun.png';
+    if (expr !== 'normal') {
+      srcPath = `assets/doyun_${expr}.png`;
     }
+    if (DOM.charDoyun.getAttribute('src') !== srcPath) {
+      DOM.charDoyun.src = srcPath;
+    }
+    renderAccessoriesOverlays('doyun', 'game');
   }
   
   // Handle Animations
@@ -1164,16 +1218,18 @@ function triggerEffect(effect) {
 function startTypewriter(text) {
   if (state.typingTimer) clearInterval(state.typingTimer);
   
+  const formattedText = text.replace(/OO/g, state.playerName);
+  
   state.isTyping = true;
-  state.currentText = text;
+  state.currentText = formattedText;
   DOM.dialogueText.innerHTML = '';
   
   let index = 0;
   state.typingTimer = setInterval(() => {
-    DOM.dialogueText.innerHTML += text.charAt(index);
+    DOM.dialogueText.innerHTML += formattedText.charAt(index);
     index++;
     
-    if (index >= text.length) {
+    if (index >= formattedText.length) {
       finishTypewriter();
     }
   }, 20); 
@@ -1192,7 +1248,12 @@ function finishTypewriter() {
   addLogEntry(step.speaker, step.text);
 }
 
+let lastClickTime = 0;
 function handleDialogueClick() {
+  const now = Date.now();
+  if (now - lastClickTime < 100) return; // 100ms cooldown to prevent double clicks/taps
+  lastClickTime = now;
+
   if (state.isTyping) {
     finishTypewriter();
   } else {
@@ -1238,7 +1299,7 @@ function showChoices(choices) {
   choices.forEach(choice => {
     const btn = document.createElement('button');
     btn.classList.add('choice-btn');
-    btn.innerHTML = choice.text;
+    btn.innerHTML = choice.text.replace(/OO/g, state.playerName);
     
     btn.addEventListener('click', () => {
       handleChoiceSelection(choice);
@@ -1286,7 +1347,7 @@ function handleSceneTransition(targetScene) {
     return;
   }
 
-  const isNewEpisode = scenario[targetScene] && scenario[targetScene].title !== undefined;
+  const isNewEpisode = scenario[targetScene] && scenario[targetScene].title !== undefined && !targetScene.startsWith('ending_') && !targetScene.startsWith('ep15_');
   
   if (isNewEpisode) {
     state.unlockedEpisode = targetScene;
@@ -1294,9 +1355,15 @@ function handleSceneTransition(targetScene) {
     // Save unlocked progress
     autosaveEpisodeCleared();
     
+    // Determine completed episode title
+    const completedEpKey = episodeStartState ? episodeStartState.currentScene : state.currentScene;
+    const completedEpTitle = (scenario[completedEpKey] && scenario[completedEpKey].title) || '에피소드';
+    
     playTransition('fade', () => {
-      alert('에피소드가 완료되었습니다! 대기화면으로 이동합니다. (진행 상황 자동 저장됨)');
-      enterLobby();
+      if (DOM.clearEpisodeTitle) {
+        DOM.clearEpisodeTitle.innerText = completedEpTitle;
+      }
+      showScreen(DOM.episodeClearScreen);
     });
   } else {
     const backgroundShift = scenario[targetScene].background !== scenario[state.currentScene].background;
@@ -1329,11 +1396,14 @@ function closeAllModals() {
 
 // History Log
 function addLogEntry(speaker, text) {
+  const formattedSpeaker = speaker ? speaker.replace(/OO/g, state.playerName) : speaker;
+  const formattedText = text ? text.replace(/OO/g, state.playerName) : text;
+  
   const lastEntry = state.historyLog[state.historyLog.length - 1];
-  if (lastEntry && lastEntry.text === text && lastEntry.speaker === speaker) {
+  if (lastEntry && lastEntry.text === formattedText && lastEntry.speaker === formattedSpeaker) {
     return;
   }
-  state.historyLog.push({ speaker, text });
+  state.historyLog.push({ speaker: formattedSpeaker, text: formattedText });
 }
 
 function renderHistoryLog() {
