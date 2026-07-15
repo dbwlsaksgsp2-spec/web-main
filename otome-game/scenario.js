@@ -1326,7 +1326,7 @@ export const scenario = {
         speaker: "도윤",
         text: "다행이네. 실은 아까 건반 위에 떨어지던 불꽃빛을 보면서... 문득 그런 생각이 들더라고. 언제까지 네 앞에서 선배라는 가면을 쓰고 있어야 할까, 하고.",
         character: "doyun",
-        expression: "normal",
+        expression: "sad",
         background: "park"
       },
       {
@@ -1367,7 +1367,7 @@ export const scenario = {
         speaker: "도윤",
         text: "OO아. 나 이제 신비주의 선배 같은 거 안 할래. 그냥 네 앞에서 가장 솔직한 사람이 되고 싶어. 너한테 가장 특별한 남자가 되고 싶은데... 나한테 기회를 줄래?",
         character: "doyun",
-        expression: "smile",
+        expression: "blush",
         effect: "shake",
         background: "park"
       },
@@ -1613,7 +1613,7 @@ export const scenario = {
         speaker: "도윤",
         text: "생각보다 싱겁게 밝혀졌어. 내 독주회가 취소됐으면 좋겠다고 생각한 어떤 팬의 사소한 장난이었더라고. 널 다치게 하려던 건 아니니까 이제 안심해도 돼.",
         character: "doyun",
-        expression: "smile",
+        expression: "sad",
         effect: "fade-in",
         background: "park"
       },
