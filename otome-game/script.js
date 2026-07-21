@@ -1889,21 +1889,24 @@ function getCharacterSpriteSrc(charId, costume = '') {
 
 function getCharacterSpriteSrcWithExpr(charId, expr = '') {
   ensureCostumeState();
+  // If expression is 'annoyed', fallback to normal
+  const validExpr = (expr === 'annoyed') ? 'normal' : expr;
+  
   const costume = state.equippedCostumes[charId] || 'uniform';
   if (costume === 'casual') {
-    if (expr && expr !== 'normal') {
-      return `assets/${charId}_casual_${expr}.png`;
+    if (validExpr && validExpr !== 'normal') {
+      return `assets/${charId}_casual_${validExpr}.png`;
     }
     return `assets/${charId}_casual.png`;
   }
   if (costume === 'date') {
-    if (expr && expr !== 'normal') {
-      return `assets/${charId}_date_${expr}.png`;
+    if (validExpr && validExpr !== 'normal') {
+      return `assets/${charId}_date_${validExpr}.png`;
     }
     return `assets/${charId}_date.png`;
   }
-  if (expr && expr !== 'normal') {
-    return `assets/${charId}_${expr}.png`;
+  if (validExpr && validExpr !== 'normal') {
+    return `assets/${charId}_${validExpr}.png`;
   }
   return `assets/${charId}.png`;
 }

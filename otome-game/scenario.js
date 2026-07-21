@@ -1,4 +1,4 @@
-export const scenario = {
+﻿export const scenario = {
   // ==========================================
   // EPISODE 1: 시간을 넘어서 - 만남
   // ==========================================
@@ -95,7 +95,7 @@ export const scenario = {
         speaker: "선우",
         text: "아, 학생회장 형이었구나? 안녕하심까~ 근데 호의가 아니라 우리 사이에 이 정돈 기본이거든요? 그치, OO아?",
         character: "sunwoo",
-        expression: "annoyed",
+        expression: "normal",
         background: "sunset"
       },
       {
@@ -183,7 +183,7 @@ export const scenario = {
         speaker: "선우",
         text: "회장 형은 분위기 깨는 데 뭐 있다니까요? 선배님이 고맙다고 인사하시던 중이었잖아요.",
         character: "sunwoo",
-        expression: "annoyed",
+        expression: "normal",
         background: "sunset"
       },
       {
@@ -339,7 +339,7 @@ export const scenario = {
         speaker: "지호",
         text: "고집 피우지 말고 내려와. 내가 꽂아줄 테니까. ...어? 야! 조심해!",
         character: "jiho",
-        expression: "annoyed",
+        expression: "normal",
         background: "library"
       },
       {
@@ -430,7 +430,7 @@ export const scenario = {
         speaker: "선우",
         text: "도와주긴 무슨... 야, OO아. 너 요즘 솔직히 너무한 거 아니냐? 며칠 전엔 음악부 강도윤 선배한테 붙어 있더니, 오늘은 또 학생회장 선배야? 나 진짜 서운하단 말이야.",
         character: "sunwoo",
-        expression: "annoyed",
+        expression: "normal",
         background: "sunset"
       },
       {
@@ -516,14 +516,14 @@ export const scenario = {
         speaker: "지호",
         text: "강도윤, 그리고 서선우. 너희까지 와서 애 정신없게 만들지 마. 얜 내 우산 받아서 조용히 등하교하면 돼. 그게 제일 깔끔해.",
         character: "jiho",
-        expression: "annoyed",
+        expression: "normal",
         background: "sunset"
       },
       {
         speaker: "선우",
         text: "회장 형, 생색내지 마요! 빌려주는 거보다 같이 쓰고 가는 소꿉친구가 훨씬 든든하거든요? 야, OO아! 너 누구 우산 쓸 거야? 빨리 골라 봐!",
         character: "sunwoo",
-        expression: "annoyed",
+        expression: "normal",
         background: "sunset"
       },
       {
@@ -630,7 +630,7 @@ export const scenario = {
         speaker: "지호",
         text: "아무것도 아니긴. 그 손에 든 건 뭔데 그러... 어? 바닥에 떨어진 이거, 글씨 짜깁기한 쪽지잖아. 이리 내놔 봐.",
         character: "jiho",
-        expression: "annoyed",
+        expression: "normal",
         background: "classroom"
       },
       {
@@ -690,7 +690,7 @@ export const scenario = {
         speaker: "지호",
         text: "이딴 유치한 짓을 학교에서 벌이다니. 쪽지는 내가 보관하겠다. 학생회 차원에서 범인부터 찾아낼 테니까 넌 신경 끄고 있어.",
         character: "jiho",
-        expression: "annoyed",
+        expression: "normal",
         effect: "fade-in",
         background: "classroom"
       },
@@ -742,7 +742,7 @@ export const scenario = {
         speaker: "지호",
         text: "쯧, 좋을 대로 해라. 대신 등하교 제외한 시간엔 내가 철저하게 통제할 테니까 알아서 해.",
         character: "jiho",
-        expression: "annoyed",
+        expression: "normal",
         background: "classroom"
       },
       {
@@ -812,7 +812,7 @@ export const scenario = {
         speaker: "선우",
         text: "하! 참나, 완전 어이없어. 야, OO아! 내 번호는 이미 저장되어 있으니까 나한테 먼저 해야 해, 알았어?! 등하교는 무조건 나랑 하는 거다!",
         character: "sunwoo",
-        expression: "annoyed",
+        expression: "normal",
         background: "classroom"
       },
       {
@@ -892,7 +892,7 @@ export const scenario = {
         speaker: "선우",
         text: "앗, 회장 형! 치사하게 OO이를 왜 학생회로 데려가요? 우리 반 부스 홍보판 만들어야 해서 OO이 손길이 꼭 필요하다고요! 야, OO아, 나랑 같이 우리 반 부스 지켜야지!",
         character: "sunwoo",
-        expression: "annoyed",
+        expression: "normal",
         effect: "fade-in",
         background: "classroom"
       },
@@ -1422,7 +1422,7 @@ export const scenario = {
         speaker: "지호",
         text: "피곤해서 이러는 거 같냐? ...너 아까 축제 때 서선우랑 강도윤 그 자식들이랑 엄청 재미있게 놀더라. 하루 종일 웃음이 나오지?",
         character: "jiho",
-        expression: "annoyed",
+        expression: "normal",
         background: "classroom"
       },
       {
@@ -2054,3 +2054,4 @@ export const scenario = {
     ]
   }
 };
+
