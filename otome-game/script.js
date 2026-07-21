@@ -283,7 +283,8 @@ const DOM = {
   roomCostumeOverlay: document.getElementById('room-costume-overlay'),
   gameCostumeJiho: document.getElementById('game-costume-jiho'),
   gameCostumeSunwoo: document.getElementById('game-costume-sunwoo'),
-  gameCostumeDoyun: document.getElementById('game-costume-doyun')
+  gameCostumeDoyun: document.getElementById('game-costume-doyun'),
+  clearAffinitySummary: document.getElementById('clear-affinity-summary')
 };
 
 // ==========================================================================
@@ -335,6 +336,19 @@ function createPetal() {
 // EVENT LISTENERS
 // ==========================================================================
 function setupEventListeners() {
+  // Global Keyboard Shortcuts for Dialogue Progress
+  document.addEventListener('keydown', (e) => {
+    // Only process if gameplay screen is active and no modals are open
+    if (DOM.gameScreen && DOM.gameScreen.classList.contains('active')) {
+      const isModalOpen = DOM.backdrop && DOM.backdrop.classList.contains('active');
+      if (!isModalOpen) {
+        if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          handleDialogueClick();
+        }
+      }
+    }
+  });
   // Title Screen Buttons
   DOM.btnNewGame.addEventListener('click', () => {
     playTransition('fade', () => {
@@ -1561,6 +1575,7 @@ function handleChoiceSelection(choice) {
     state.affinity.sunwoo += choice.affinity.sunwoo || 0;
     state.affinity.doyun += choice.affinity.doyun || 0;
     updateHUD();
+    showAffinityPopEffect(choice.affinity);
   }
   
   DOM.choiceOverlay.classList.remove('active');
@@ -1583,6 +1598,37 @@ function handleChoiceSelection(choice) {
   }
 }
 
+// Visual Floating Pop Effect when Affinity increases
+function showAffinityPopEffect(affinity) {
+  const charNames = { jiho: '지호', sunwoo: '선우', doyun: '도윤' };
+  const pops = [];
+  
+  Object.keys(affinity).forEach(char => {
+    const val = affinity[char];
+    if (val > 0) {
+      pops.push({ name: charNames[char], val });
+    }
+  });
+
+  if (pops.length === 0) return;
+
+  const container = document.createElement('div');
+  container.className = 'affinity-pop-container';
+  
+  pops.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'affinity-pop-item';
+    item.innerHTML = `<i class="fa-solid fa-heart"></i> ${p.name} 호감도 +${p.val}`;
+    container.appendChild(item);
+  });
+  
+  DOM.gameScreen.appendChild(container);
+  
+  setTimeout(() => {
+    container.remove();
+  }, 1800);
+}
+
 function handleSceneTransition(targetScene) {
   if (targetScene === 'title') {
     playTransition('fade', () => {
@@ -1596,6 +1642,23 @@ function handleSceneTransition(targetScene) {
   if (isNewEpisode) {
     state.unlockedEpisode = targetScene;
     
+    // Calculate affinity gained during this episode
+    let affinityGainedHtml = '';
+    if (episodeStartState && episodeStartState.affinity) {
+      const diffJiho = state.affinity.jiho - episodeStartState.affinity.jiho;
+      const diffSunwoo = state.affinity.sunwoo - episodeStartState.affinity.sunwoo;
+      const diffDoyun = state.affinity.doyun - episodeStartState.affinity.doyun;
+      
+      const items = [];
+      if (diffJiho > 0) items.push(`지호 <span style="color:#8cb4ff;">+${diffJiho}</span>`);
+      if (diffSunwoo > 0) items.push(`선우 <span style="color:#ffa68c;">+${diffSunwoo}</span>`);
+      if (diffDoyun > 0) items.push(`도윤 <span style="color:#cfcfd6;">+${diffDoyun}</span>`);
+      
+      if (items.length > 0) {
+        affinityGainedHtml = `<p style="font-size:13px; color:#ff80ab; margin: 8px 0 12px 0;"><i class="fa-solid fa-heart"></i> 획득 호감도: ${items.join(' &nbsp;|&nbsp; ')}</p>`;
+      }
+    }
+    
     // Save unlocked progress
     autosaveEpisodeCleared();
     
@@ -1606,6 +1669,9 @@ function handleSceneTransition(targetScene) {
     playTransition('fade', () => {
       if (DOM.clearEpisodeTitle) {
         DOM.clearEpisodeTitle.innerText = completedEpTitle;
+      }
+      if (DOM.clearAffinitySummary) {
+        DOM.clearAffinitySummary.innerHTML = affinityGainedHtml;
       }
       showScreen(DOM.episodeClearScreen);
     });
@@ -1720,6 +1786,16 @@ function unlockEnding(endingId) {
   }
 }
 
+const ENDING_HINTS = {
+  jiho_happy: '지호 호감도 80 이상 필요',
+  jiho_normal: '지호 호감도 40 이상 필요',
+  sunwoo_happy: '선우 호감도 80 이상 필요',
+  sunwoo_normal: '선우 호감도 40 이상 필요',
+  doyun_happy: '도윤 호감도 80 이상 필요',
+  doyun_normal: '도윤 호감도 40 이상 필요',
+  solo: '스토리 진행 필요'
+};
+
 function updateGalleryUI() {
   const unlocked = getUnlockedEndings();
   
@@ -1731,6 +1807,16 @@ function updateGalleryUI() {
       wrapper.classList.remove('locked');
       const lockOverlay = wrapper.querySelector('.lock-overlay');
       if (lockOverlay) lockOverlay.remove();
+      
+      const existingBadge = item.querySelector('.album-hint-badge');
+      if (existingBadge) existingBadge.remove();
+    } else {
+      if (!item.querySelector('.album-hint-badge') && ENDING_HINTS[endingId]) {
+        const badge = document.createElement('span');
+        badge.className = 'album-hint-badge';
+        badge.innerHTML = `<i class="fa-solid fa-key" style="font-size:10px; margin-right:3px;"></i> ${ENDING_HINTS[endingId]}`;
+        item.appendChild(badge);
+      }
     }
   });
 }
