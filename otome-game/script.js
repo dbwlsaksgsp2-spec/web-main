@@ -1554,10 +1554,30 @@ function updateHUD() {
 function showChoices(choices) {
   DOM.choiceContainer.innerHTML = '';
   
+  const charNames = { jiho: '지호', sunwoo: '선우', doyun: '도윤' };
+  
   choices.forEach(choice => {
     const btn = document.createElement('button');
     btn.classList.add('choice-btn');
-    btn.innerHTML = choice.text.replace(/OO/g, state.playerName);
+    
+    // Check if affinity increases with this choice
+    let affinityBadgeHtml = '';
+    if (choice.affinity) {
+      const parts = [];
+      Object.keys(choice.affinity).forEach(char => {
+        const val = choice.affinity[char];
+        if (val > 0) {
+          const name = charNames[char] || char;
+          parts.push(`+${val} (${name})`);
+        }
+      });
+      if (parts.length > 0) {
+        affinityBadgeHtml = `<span class="choice-affinity-badge"><i class="fa-solid fa-heart"></i> ${parts.join(', ')}</span>`;
+      }
+    }
+    
+    const formattedText = choice.text.replace(/OO/g, state.playerName);
+    btn.innerHTML = `<span class="choice-text">${formattedText}</span>${affinityBadgeHtml}`;
     
     btn.addEventListener('click', () => {
       handleChoiceSelection(choice);

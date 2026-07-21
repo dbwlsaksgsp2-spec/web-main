@@ -699,14 +699,51 @@ body {
   font-size: 14px;
   font-weight: 500;
   color: #fff;
-  background: linear-gradient(135deg, rgba(21, 20, 40, 0.85) 0%, rgba(13, 12, 24, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(21, 20, 40, 0.88) 0%, rgba(13, 12, 24, 0.95) 100%);
   border: 1px solid var(--glass-border);
-  padding: 16px 20px;
+  padding: 14px 18px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  text-align: center;
+  text-align: left;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   transition: var(--transition-smooth);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.choice-text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.choice-affinity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 128, 171, 0.15);
+  border: 1px solid rgba(255, 128, 171, 0.4);
+  color: #ff80ab;
+  font-family: var(--font-title);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(255, 128, 171, 0.2);
+  flex-shrink: 0;
+}
+
+.choice-affinity-badge i {
+  font-size: 11px;
+  color: #ff4081;
+  animation: heartPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
 }
 
 .choice-btn:active {
