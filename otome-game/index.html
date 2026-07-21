@@ -7,7 +7,7 @@
   <!-- Google Fonts: Gowun Batang for story, Noto Sans KR for UI -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
   <!-- FontAwesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css?v=27">
@@ -135,6 +135,7 @@
                 <div class="sprite-wrapper">
                   <div class="lobby-char-container">
                     <img id="lobby-char-sprite" class="lobby-char-sprite active" src="assets/jiho.png" alt="남주인공 스탠딩">
+                    <img id="lobby-costume-overlay" class="costume-overlay-layer lobby-char-sprite active" src="" alt="의상 오버레이" style="display: none;">
                     <!-- Live Accessory Decoration Overlay Layers -->
                     <div id="lobby-decor-glasses" class="decor-layer decor-glasses"></div>
                     <div id="lobby-decor-ears" class="decor-layer decor-ears"></div>
@@ -167,44 +168,48 @@
             
             <!-- Character Preview Area inside Closet -->
             <div class="closet-preview-container">
+              <button id="btn-closet-prev" class="closet-arrow-btn left" aria-label="이전 남주인공"><i class="fa-solid fa-chevron-left"></i></button>
               <div class="closet-sprite-wrapper">
                 <div class="closet-char-container">
                   <img id="closet-char-sprite" class="closet-char-sprite" src="assets/jiho.png" alt="남주인공 스탠딩">
+                  <img id="closet-costume-overlay" class="costume-overlay-layer closet-char-sprite" src="" alt="의상 오버레이" style="display: none;">
+                  <!-- Legacy overlay layers kept hidden for backward compatibility -->
                   <div id="closet-decor-glasses" class="decor-layer decor-glasses"></div>
                   <div id="closet-decor-ears" class="decor-layer decor-ears"></div>
                   <div id="closet-decor-scarf" class="decor-layer decor-scarf"></div>
                 </div>
               </div>
+              <button id="btn-closet-next" class="closet-arrow-btn right" aria-label="다음 남주인공"><i class="fa-solid fa-chevron-right"></i></button>
               <div class="closet-preview-name">
                 <span id="closet-char-name">한지호</span>
               </div>
             </div>
             
-            <!-- Accessories items list -->
+            <!-- Costumes items list -->
             <div class="closet-items-grid">
-              <div class="closet-item" data-item="glasses">
-                <div class="item-icon-wrapper"><i class="fa-solid fa-glasses"></i></div>
+              <div class="closet-item" data-item="uniform">
+                <div class="item-icon-wrapper"><i class="fa-solid fa-graduation-cap"></i></div>
                 <div class="item-details">
-                  <span class="item-name">스마트 안경</span>
-                  <span class="item-price">100 P</span>
+                  <span class="item-name">기본 교복 의상</span>
+                  <span class="item-price">기본 제공</span>
                 </div>
-                <button class="btn-item-action" data-item="glasses">구매하기</button>
+                <button class="btn-item-action" data-item="uniform">착용중</button>
               </div>
-              <div class="closet-item" data-item="ears">
-                <div class="item-icon-wrapper"><i class="fa-solid fa-cat"></i></div>
+              <div class="closet-item" data-item="casual">
+                <div class="item-icon-wrapper"><i class="fa-solid fa-shirt"></i></div>
                 <div class="item-details">
-                  <span class="item-name">귀여운 고양이 귀</span>
-                  <span class="item-price">200 P</span>
-                </div>
-                <button class="btn-item-action" data-item="ears">구매하기</button>
-              </div>
-              <div class="closet-item" data-item="scarf">
-                <div class="item-icon-wrapper"><i class="fa-solid fa-ribbon"></i></div>
-                <div class="item-details">
-                  <span class="item-name">붉은 목도리</span>
+                  <span class="item-name">캐주얼 사복 의상</span>
                   <span class="item-price">300 P</span>
                 </div>
-                <button class="btn-item-action" data-item="scarf">구매하기</button>
+                <button class="btn-item-action" data-item="casual">구매하기</button>
+              </div>
+              <div class="closet-item" data-item="date">
+                <div class="item-icon-wrapper"><i class="fa-solid fa-heart"></i></div>
+                <div class="item-details">
+                  <span class="item-name">데이트 복장</span>
+                  <span class="item-price">500 P</span>
+                </div>
+                <button class="btn-item-action" data-item="date">구매하기</button>
               </div>
             </div>
           </div>
@@ -221,7 +226,7 @@
                 <div class="job-icon"><i class="fa-solid fa-mug-hot"></i></div>
                 <div class="job-info">
                   <span class="job-title">베이커리 카페 알바</span>
-                  <span class="job-reward">+30 P (소요시간 5초)</span>
+                  <span class="job-reward">+30 P <span class="job-time">(소요시간 5초)</span></span>
                   <div class="job-progress-bar"><div id="progress-job-cafe" class="fill"></div></div>
                 </div>
                 <button class="btn-start-job" data-job="cafe">알바시작</button>
@@ -231,7 +236,7 @@
                 <div class="job-icon"><i class="fa-solid fa-book"></i></div>
                 <div class="job-info">
                   <span class="job-title">도서실 서적 정리</span>
-                  <span class="job-reward">+80 P (소요시간 10초)</span>
+                  <span class="job-reward">+80 P <span class="job-time">(소요시간 10초)</span></span>
                   <div class="job-progress-bar"><div id="progress-job-library" class="fill"></div></div>
                 </div>
                 <button class="btn-start-job" data-job="library">알바시작</button>
@@ -241,7 +246,7 @@
                 <div class="job-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                 <div class="job-info">
                   <span class="job-title">꽃집 카운터 보조</span>
-                  <span class="job-reward">+150 P (소요시간 15초)</span>
+                  <span class="job-reward">+150 P <span class="job-time">(소요시간 15초)</span></span>
                   <div class="job-progress-bar"><div id="progress-job-flower" class="fill"></div></div>
                 </div>
                 <button class="btn-start-job" data-job="flower">알바시작</button>
@@ -272,6 +277,7 @@
                 <!-- Clickable touch zone over character -->
                 <div id="room-touch-zone" class="room-touch-zone"></div>
                 <img id="room-char-sprite" class="room-char-sprite" src="assets/jiho.png" alt="초대된 남주인공">
+                <img id="room-costume-overlay" class="costume-overlay-layer room-char-sprite" src="" alt="의상 오버레이" style="display: none;">
               </div>
               
               <!-- Personal Room dialogue display -->
@@ -462,6 +468,7 @@
           <!-- Character Sprites (3 Boys with Accessory overlays) -->
           <div id="wrapper-sprite-jiho" class="char-sprite-wrapper">
             <img id="char-sprite-jiho" class="char-sprite" src="assets/jiho.png" alt="한지호">
+            <img id="game-costume-jiho" class="costume-overlay-layer char-sprite" src="" alt="의상 오버레이" style="display: none;">
             <div id="game-decor-jiho-glasses" class="decor-layer decor-glasses"></div>
             <div id="game-decor-jiho-ears" class="decor-layer decor-ears"></div>
             <div id="game-decor-jiho-scarf" class="decor-layer decor-scarf"></div>
@@ -469,6 +476,7 @@
           
           <div id="wrapper-sprite-sunwoo" class="char-sprite-wrapper">
             <img id="char-sprite-sunwoo" class="char-sprite" src="assets/sunwoo.png" alt="서선우">
+            <img id="game-costume-sunwoo" class="costume-overlay-layer char-sprite" src="" alt="의상 오버레이" style="display: none;">
             <div id="game-decor-sunwoo-glasses" class="decor-layer decor-glasses"></div>
             <div id="game-decor-sunwoo-ears" class="decor-layer decor-ears"></div>
             <div id="game-decor-sunwoo-scarf" class="decor-layer decor-scarf"></div>
@@ -476,6 +484,7 @@
           
           <div id="wrapper-sprite-doyun" class="char-sprite-wrapper">
             <img id="char-sprite-doyun" class="char-sprite" src="assets/doyun.png" alt="강도윤">
+            <img id="game-costume-doyun" class="costume-overlay-layer char-sprite" src="" alt="의상 오버레이" style="display: none;">
             <div id="game-decor-doyun-glasses" class="decor-layer decor-glasses"></div>
             <div id="game-decor-doyun-ears" class="decor-layer decor-ears"></div>
             <div id="game-decor-doyun-scarf" class="decor-layer decor-scarf"></div>
@@ -549,6 +558,17 @@
           <div class="autosave-notice">
             <i class="fa-solid fa-circle-check"></i> 이 게임은 <strong>에피소드 완료 시 자동 저장</strong>됩니다. 진행 도중 나갈 경우 해당 에피소드의 처음부터 시작됩니다.
           </div>
+          
+          <!-- Font Selection Settings -->
+          <div class="settings-group">
+            <span class="settings-label"><i class="fa-solid fa-font"></i> 대화창 글자체 설정</span>
+            <div class="font-selector">
+              <button class="font-opt-btn" data-font="gowun-batang">고운 바탕</button>
+              <button class="font-opt-btn" data-font="nanum-pen">나눔손글씨 펜</button>
+              <button class="font-opt-btn active" data-font="noto-sans">노토 산스</button>
+            </div>
+          </div>
+
           <button id="btn-menu-log" class="modal-nav-btn"><i class="fa-solid fa-book-open"></i> 지난 대화 (Log)</button>
           <button id="btn-menu-restart" class="modal-nav-btn warning"><i class="fa-solid fa-arrows-rotate"></i> 이번 에피소드 처음부터</button>
           <button id="btn-menu-lobby" class="modal-nav-btn danger"><i class="fa-solid fa-couch"></i> 대기화면으로 (Lobby)</button>
@@ -577,9 +597,64 @@
         </div>
       </div>
 
+      <!-- Part-Time Job SD Character Animation Modal -->
+      <div id="modal-job-animation" class="job-anim-modal">
+        <div class="job-anim-card">
+          <!-- Top Header -->
+          <div class="job-anim-header">
+            <div class="job-anim-title-group">
+              <i id="job-anim-icon" class="fa-solid fa-mug-hot"></i>
+              <span id="job-anim-title">베이커리 카페 알바</span>
+            </div>
+            <span id="job-anim-timer" class="job-anim-timer">00:05</span>
+          </div>
+
+          <!-- Stage Viewport -->
+          <div id="job-anim-stage" class="job-anim-stage theme-cafe">
+            <!-- Decorative Sparks & Petals -->
+            <div class="job-sparkles">
+              <i class="fa-solid fa-sparkle spark1"></i>
+              <i class="fa-solid fa-heart spark2"></i>
+              <i class="fa-solid fa-star spark3"></i>
+            </div>
+
+            <!-- Mini Job Counter / Work Station Background Prop -->
+            <div class="job-prop-counter"></div>
+
+            <!-- Genuine Animated SD Chibi Character Sprite Container -->
+            <div id="job-chibi-container" class="job-chibi-anim-box">
+              <img id="job-chibi-img" class="job-chibi-sprite" src="assets/sd_sunwoo.png" alt="SD Chibi 캐릭터">
+            </div>
+          </div>
+
+          <!-- Footer Info & Progress -->
+          <div class="job-anim-footer">
+            <div id="job-anim-status-text" class="job-anim-status-text">
+              "달콤한 초코 라떼와 갓 구운 빵 만드는 중... ☕"
+            </div>
+            <div class="job-anim-progress-track">
+              <div id="job-anim-progress-fill" class="fill"></div>
+            </div>
+          </div>
+
+          <!-- Completion Popup Overlay (Inside Modal) -->
+          <div id="job-anim-complete-overlay" class="job-anim-complete-overlay">
+            <div class="complete-content">
+              <i class="fa-solid fa-circle-check check-icon"></i>
+              <h3>아르바이트 완료!</h3>
+              <div class="reward-badge">
+                <i class="fa-solid fa-coins gold-coin"></i>
+                <span id="job-anim-reward-val">+30 P</span>
+              </div>
+              <p>수고하셨습니다! 포인트가 지급되었습니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <script type="module" src="script.js?v=7"></script>
+  <script type="module" src="script.js?v=8"></script>
 </body>
 </html>

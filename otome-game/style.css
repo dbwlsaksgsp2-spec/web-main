@@ -3,7 +3,7 @@
    ========================================================================== */
 :root {
   --font-title: 'Outfit', 'Noto Sans KR', sans-serif;
-  --font-story: 'Gowun Batang', serif;
+  --font-story: 'Noto Sans KR', sans-serif;
   --font-ui: 'Noto Sans KR', sans-serif;
 
   /* Theme Colors */
@@ -26,6 +26,19 @@
   --radius-lg: 24px;
   --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Dynamic Dialog Fonts */
+body.font-gowun-batang {
+  --font-story: 'Gowun Batang', serif;
+}
+
+body.font-nanum-pen {
+  --font-story: 'Nanum Pen Script', cursive;
+}
+
+body.font-noto-sans {
+  --font-story: 'Noto Sans KR', sans-serif;
 }
 
 /* Reset */
@@ -828,6 +841,59 @@ body {
   border-color: #d9534f;
 }
 
+/* Font Settings UI */
+.settings-group {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.settings-label {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary-pink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.font-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.font-opt-btn {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  text-align: center;
+}
+
+.font-opt-btn:active {
+  transform: scale(0.96);
+}
+
+.font-opt-btn.active {
+  color: white;
+  background: linear-gradient(135deg, var(--primary-pink) 0%, var(--primary-pink-dark) 100%);
+  border-color: var(--primary-pink);
+  box-shadow: 0 4px 12px rgba(255, 140, 163, 0.25);
+}
+
 /* Save Load Slots Layout */
 .save-slots-grid {
   display: flex;
@@ -1377,6 +1443,13 @@ body {
   top: 19.0% !important;
 }
 
+/* Sunwoo specific lobby scale adjustment */
+.sprite-wrapper.active-sunwoo .lobby-char-container {
+  transform: translateX(-50%) translateY(-75px) scale(0.91);
+  transform-origin: bottom center;
+  top: -10px;
+}
+
 .sprite-wrapper.active-doyun .decor-glasses {
   top: 10.2% !important;
 }
@@ -1397,19 +1470,19 @@ body {
 /* Speech Bubble in Lobby */
 .lobby-talk-bubble {
   position: absolute;
-  bottom: 130px;
+  bottom: 92px;
   left: 20px;
   width: calc(100% - 40px);
   background: rgba(21, 20, 40, 0.8);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
+  padding: 18px 22px;
   box-shadow: var(--shadow-main);
   backdrop-filter: blur(10px);
   z-index: 85;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -1419,14 +1492,14 @@ body {
 }
 
 .talk-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--primary-pink);
 }
 
 .talk-text {
   font-family: var(--font-story);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   color: white;
   word-break: keep-all;
@@ -1456,6 +1529,22 @@ body {
   /* space between HUD and Bottom Nav */
   overflow: hidden;
   z-index: 10;
+  transition: top 0.3s ease, height 0.3s ease;
+}
+
+/* Sub-tab Active Layout (Hide Top HUD & Move Header Titles Up) */
+#lobby-screen.subtab-active .lobby-hud {
+  display: none !important;
+}
+
+#lobby-screen.subtab-active .lobby-tabs-viewport {
+  top: 0;
+  height: calc(100% - 65px);
+}
+
+#lobby-screen.subtab-active .tab-header-title {
+  padding-top: 36px;
+  padding-bottom: 14px;
 }
 
 .lobby-tab-content {
@@ -1609,17 +1698,49 @@ body {
   overflow: hidden;
 }
 
+.closet-arrow-btn {
+  position: absolute;
+  top: 25%;
+  background: rgba(21, 20, 40, 0.6);
+  border: 1px solid var(--glass-border);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10;
+  backdrop-filter: blur(5px);
+  transition: var(--transition-smooth);
+}
+
+.closet-arrow-btn:active {
+  background: var(--primary-pink);
+  border-color: var(--primary-pink);
+  transform: scale(0.9);
+}
+
+.closet-arrow-btn.left {
+  left: 20px;
+}
+
+.closet-arrow-btn.right {
+  right: 20px;
+}
+
 .closet-sprite-wrapper {
   position: relative;
   width: 100%;
-  height: 55% !important;
+  height: calc(100% - 240px) !important;
   flex: none;
   overflow: hidden;
 }
 
 .closet-char-container {
   position: absolute;
-  top: -10px;
+  top: 40px;
   left: 50%;
   transform: translateX(-50%);
   width: 1476px;
@@ -1674,6 +1795,13 @@ body {
   top: 18.0% !important;
 }
 
+/* Sunwoo specific closet scale adjustment */
+.closet-sprite-wrapper.active-sunwoo .closet-char-container {
+  transform: translateX(-50%) translateY(-75px) scale(0.91);
+  transform-origin: bottom center;
+  top: 40px;
+}
+
 .closet-sprite-wrapper.active-doyun .decor-glasses {
   top: 11.2% !important;
 }
@@ -1688,7 +1816,9 @@ body {
 
 .closet-preview-name {
   position: absolute;
-  bottom: calc(45% + 8px);
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
   font-weight: bold;
   font-size: 13px;
   color: var(--text-muted);
@@ -1706,11 +1836,11 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 45%;
+  height: 240px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 15px 20px;
+  padding: 10px 20px 10px;
   overflow-y: auto;
   z-index: 10;
   background: linear-gradient(to top, rgba(21, 20, 36, 0.95) 0%, rgba(21, 20, 36, 0.65) 100%);
@@ -1818,63 +1948,160 @@ body {
 }
 
 /* ==========================================================================
-   TAB 3: ALBA STYLING (알바)
+   TAB HEADER TITLE SYSTEM
    ========================================================================== */
+.tab-header-title {
+  padding: 16px 20px 14px;
+  background: linear-gradient(135deg, rgba(28, 25, 48, 0.92) 0%, rgba(18, 16, 32, 0.96) 100%);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+.tab-header-title h3 {
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 800;
+  color: #ff9ebb;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.3px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.tab-header-title h3 i {
+  color: var(--primary-pink);
+  filter: drop-shadow(0 0 8px rgba(255, 140, 163, 0.6));
+}
+
+.tab-header-title p {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 4px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================================================
+   TAB 3: ALBA STYLING (알바) - HIGH CONTRAST LUXURY UI
+   ========================================================================== */
+#lobby-tab-job {
+  background: rgba(14, 13, 24, 0.75);
+  backdrop-filter: blur(12px);
+}
+
 .job-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding: 15px 20px;
-  height: calc(100% - 70px);
+  gap: 16px;
+  padding: 20px;
+  height: calc(100% - 75px);
   overflow-y: auto;
 }
 
 .job-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-md);
-  padding: 16px;
+  background: linear-gradient(135deg, rgba(32, 28, 54, 0.95) 0%, rgba(20, 18, 36, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  padding: 18px 20px;
   display: flex;
   align-items: center;
   gap: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(16px);
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.job-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary-pink), var(--accent-purple));
+  border-radius: 4px 0 0 4px;
+}
+
+.job-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 160, 180, 0.45);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 140, 163, 0.25);
 }
 
 .job-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-sm);
-  background: rgba(157, 141, 242, 0.15);
-  border: 1px solid rgba(157, 141, 242, 0.25);
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 22px;
-  color: var(--accent-purple);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.job-card[data-job="cafe"] .job-icon {
+  background: linear-gradient(135deg, rgba(255, 154, 158, 0.3) 0%, rgba(250, 208, 196, 0.2) 100%);
+  border: 1px solid rgba(255, 154, 158, 0.5);
+  color: #ff9a9e;
+}
+
+.job-card[data-job="library"] .job-icon {
+  background: linear-gradient(135deg, rgba(161, 140, 209, 0.3) 0%, rgba(251, 194, 235, 0.2) 100%);
+  border: 1px solid rgba(161, 140, 209, 0.5);
+  color: #c4b5fd;
+}
+
+.job-card[data-job="flower"] .job-icon {
+  background: linear-gradient(135deg, rgba(255, 117, 140, 0.3) 0%, rgba(255, 126, 179, 0.2) 100%);
+  border: 1px solid rgba(255, 117, 140, 0.5);
+  color: #ff80ab;
 }
 
 .job-info {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .job-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: white;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .job-reward {
-  font-size: 10px;
-  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffe082;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.job-reward .job-time {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .job-progress-bar {
   width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
   overflow: hidden;
   margin-top: 4px;
 }
@@ -1882,34 +2109,43 @@ body {
 .job-progress-bar .fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(to right, var(--primary-pink), var(--primary-pink-dark));
-  border-radius: 4px;
+  background: linear-gradient(90deg, #ff80ab, #ff4081, #ffd54f);
+  box-shadow: 0 0 10px rgba(255, 64, 129, 0.6);
+  border-radius: 6px;
   transition: width 0.1s linear;
 }
 
 .btn-start-job {
   font-family: var(--font-ui);
-  font-size: 11px;
-  font-weight: 700;
-  background: linear-gradient(135deg, var(--primary-pink) 0%, var(--primary-pink-dark) 100%);
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b8b 0%, #d81b60 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 10px 18px;
+  border-radius: 22px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(255, 140, 163, 0.25);
+  box-shadow: 0 4px 14px rgba(216, 27, 96, 0.45);
   transition: var(--transition-smooth);
+  flex-shrink: 0;
+  letter-spacing: -0.2px;
 }
 
 .btn-start-job:disabled {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ff80ab;
+  border-color: rgba(255, 128, 171, 0.3);
   box-shadow: none;
   cursor: not-allowed;
 }
 
+.btn-start-job:not(:disabled):hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 6px 18px rgba(216, 27, 96, 0.55);
+}
+
 .btn-start-job:not(:disabled):active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 /* ==========================================================================
@@ -1944,8 +2180,8 @@ body {
 }
 
 .room-view-container {
-  margin: 15px 20px;
-  height: calc(100% - 120px);
+  margin: 10px 15px 15px;
+  height: calc(100% - 150px);
   background-image: linear-gradient(to bottom, rgba(21, 20, 36, 0.2), rgba(21, 20, 36, 0.7)), url('assets/bg_classroom.png');
   background-size: cover;
   background-position: center;
@@ -1969,13 +2205,21 @@ body {
 }
 
 .room-char-sprite {
-  height: 820px;
-  /* identical fixed size! */
+  height: 984px;
+  /* 20% larger scale! (820px -> 984px) */
   width: auto;
   object-fit: contain;
-  margin-bottom: -280px;
-  /* shift the waist to sit right above the dialogue box */
-  transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1.4);
+  margin-bottom: -355px;
+  /* shift character down so full head and hair are comfortably visible */
+  opacity: 1;
+  transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+  transform-origin: bottom center;
+}
+
+/* Sunwoo specific room scale adjustment */
+.room-sprite-viewport.active-sunwoo .room-char-sprite {
+  transform: translateY(-75px) scale(0.91);
+  transform-origin: bottom center;
 }
 
 .room-char-sprite.pulse-talk {
@@ -2006,15 +2250,16 @@ body {
 
 .room-talk-bubble {
   position: absolute;
-  bottom: 15px;
-  left: 15px;
-  width: calc(100% - 30px);
-  background: rgba(21, 20, 36, 0.85);
+  bottom: 12px;
+  left: 12px;
+  width: calc(100% - 24px);
+  background: rgba(21, 20, 36, 0.94);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   padding: 12px 16px;
-  backdrop-filter: blur(8px);
-  z-index: 20;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  z-index: 25;
 }
 
 .room-talk-bubble span {
@@ -2068,6 +2313,12 @@ body {
   justify-content: center;
   align-items: flex-end;
   pointer-events: none;
+}
+
+/* Sunwoo specific gameplay scale adjustment */
+.char-sprite-wrapper.active-sunwoo {
+  transform: translateY(-75px) scale(0.91);
+  transform-origin: bottom center;
 }
 
 .decor-layer {
@@ -2397,7 +2648,8 @@ body {
   display: none;
   justify-content: center;
   align-items: center;
-  z-index: 95; /* Sit on top of typical scenes but below transition overlays */
+  z-index: 95;
+  /* Sit on top of typical scenes but below transition overlays */
   cursor: pointer;
 }
 
@@ -2521,6 +2773,7 @@ body {
     opacity: 0;
     transform: scale(0.92) translateY(20px);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -2532,6 +2785,7 @@ body {
     border-color: rgba(255, 140, 163, 0.3);
     box-shadow: 0 0 10px rgba(255, 140, 163, 0.1);
   }
+
   100% {
     border-color: rgba(255, 140, 163, 0.6);
     box-shadow: 0 0 20px rgba(255, 140, 163, 0.35);
@@ -2539,18 +2793,37 @@ body {
 }
 
 @keyframes heart-beat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
 }
 
 @keyframes tap-prompt-fade {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.95; }
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.95;
+  }
 }
 
 @keyframes arrow-bounce-right {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(5px); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(5px);
+  }
 }
 
 /* ==========================================================================
@@ -2675,6 +2948,7 @@ body {
   0% {
     transform: translateY(0);
   }
+
   100% {
     transform: translateY(-1px);
   }
@@ -2684,6 +2958,7 @@ body {
   0% {
     transform: translateY(0);
   }
+
   100% {
     transform: translateY(-1.5px);
   }
@@ -2693,6 +2968,7 @@ body {
   0% {
     transform: translateY(0.5px);
   }
+
   100% {
     transform: translateY(2px);
   }
@@ -2702,6 +2978,7 @@ body {
   0% {
     transform: translateY(-0.5px);
   }
+
   100% {
     transform: translateY(-1.5px);
   }
@@ -2711,7 +2988,340 @@ body {
   0% {
     transform: translateY(1px);
   }
+
   100% {
     transform: translateY(2.5px);
   }
+}
+
+/* Costume Layer Overlay (Disabled in favor of direct sprite src switching) */
+.costume-overlay-layer {
+  display: none !important;
+}
+
+/* ==========================================================================
+   PART-TIME JOB SD CHARACTER ANIMATION MODAL & STYLING
+   ========================================================================== */
+.job-anim-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(14, 13, 24, 0.85);
+  backdrop-filter: blur(14px);
+  z-index: 150;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.job-anim-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.job-anim-card {
+  width: 100%;
+  max-width: 380px;
+  background: linear-gradient(135deg, rgba(32, 28, 54, 0.96) 0%, rgba(20, 18, 36, 0.98) 100%);
+  border: 1px solid rgba(255, 160, 180, 0.3);
+  border-radius: 22px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(255, 140, 163, 0.25);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.job-anim-header {
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.job-anim-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 800;
+  color: white;
+}
+
+.job-anim-title-group i {
+  color: var(--primary-pink);
+  font-size: 18px;
+}
+
+.job-anim-timer {
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffe082;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 224, 130, 0.3);
+}
+
+/* Stage Viewport */
+.job-anim-stage {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+}
+
+.job-anim-stage.theme-cafe {
+  background-image: linear-gradient(to bottom, rgba(21, 20, 36, 0.3), rgba(21, 20, 36, 0.7)), url('assets/bg_sunset.png');
+}
+
+.job-anim-stage.theme-library {
+  background-image: linear-gradient(to bottom, rgba(21, 20, 36, 0.3), rgba(21, 20, 36, 0.7)), url('assets/bg_library.png');
+}
+
+.job-anim-stage.theme-flower {
+  background-image: linear-gradient(to bottom, rgba(21, 20, 36, 0.3), rgba(21, 20, 36, 0.7)), url('assets/bg_park.png');
+}
+
+/* Counter / Prop Floor Line */
+.job-prop-counter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 45px;
+  background: linear-gradient(to top, rgba(20, 18, 36, 0.9), rgba(20, 18, 36, 0.4));
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 2;
+}
+
+/* Sparkles & Petals Floating */
+.job-sparkles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.job-sparkles i {
+  position: absolute;
+  color: #ff80ab;
+  animation: sparkFloat 2s infinite ease-in-out;
+}
+
+.job-sparkles .spark1 {
+  top: 20%;
+  left: 15%;
+  font-size: 14px;
+  animation-delay: 0s;
+  color: #ffe082;
+}
+
+.job-sparkles .spark2 {
+  top: 35%;
+  right: 20%;
+  font-size: 16px;
+  animation-delay: 0.6s;
+  color: #ff80ab;
+}
+
+.job-sparkles .spark3 {
+  top: 60%;
+  left: 80%;
+  font-size: 12px;
+  animation-delay: 1.2s;
+  color: #c4b5fd;
+}
+
+@keyframes sparkFloat {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-10px) scale(1.3) rotate(180deg);
+    opacity: 0.95;
+  }
+}
+
+/* Authentic High-Quality SD Chibi Character Animated Sprite */
+.job-chibi-anim-box {
+  position: absolute;
+  bottom: 0px;
+  left: 20%;
+  height: 165px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 10;
+  animation: chibiWalkPatrol 4.5s ease-in-out infinite alternate;
+}
+
+.job-chibi-sprite {
+  height: 160px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+  animation: chibiHopBounce 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes chibiWalkPatrol {
+  0% {
+    left: 12%;
+    transform: scaleX(1);
+  }
+
+  47% {
+    left: 62%;
+    transform: scaleX(1);
+  }
+
+  53% {
+    left: 62%;
+    transform: scaleX(-1);
+  }
+
+  100% {
+    left: 12%;
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes chibiHopBounce {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-7px);
+  }
+}
+
+/* Footer & Progress */
+.job-anim-footer {
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.job-anim-status-text {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ff9ebb;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.job-anim-progress-track {
+  width: 100%;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.job-anim-progress-track .fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff80ab, #ff4081, #ffd54f);
+  box-shadow: 0 0 14px rgba(255, 64, 129, 0.8);
+  border-radius: 8px;
+  transition: width 0.1s linear;
+}
+
+/* Completion Overlay Inside Modal */
+.job-anim-complete-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(20, 18, 36, 0.95);
+  backdrop-filter: blur(16px);
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.job-anim-complete-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.complete-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  animation: completePop 0.4s cubic-bezier(0.25, 0.8, 0.25, 1.4);
+}
+
+@keyframes completePop {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.complete-content .check-icon {
+  font-size: 52px;
+  color: #ff80ab;
+  filter: drop-shadow(0 0 12px rgba(255, 128, 171, 0.8));
+}
+
+.complete-content h3 {
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 800;
+  color: white;
+}
+
+.complete-content .reward-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffe082;
+  background: rgba(255, 224, 130, 0.15);
+  border: 1px solid rgba(255, 224, 130, 0.4);
+  padding: 8px 20px;
+  border-radius: 20px;
+}
+
+.complete-content p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
 }

@@ -19,13 +19,21 @@ let state = {
   // New 5-Tab System State
   activeLobbyTab: 'main', // 'main', 'closet', 'job', 'room', 'album'
   points: 0, // Gold points earned from jobs
-  unlockedAccessories: [], // Array of unlocked accessory IDs (e.g. ['glasses'])
-  equippedAccessories: {
-    jiho: [], // Array of equipped accessory IDs (e.g. ['glasses', 'ears'])
-    sunwoo: [],
-    doyun: []
+  unlockedCostumes: {
+    jiho: ['uniform'],
+    sunwoo: ['uniform'],
+    doyun: ['uniform']
   },
+  equippedCostumes: {
+    jiho: 'uniform',
+    sunwoo: 'uniform',
+    doyun: 'uniform'
+  },
+  // Legacy mappings for backward compatibility
+  unlockedAccessories: [],
+  equippedAccessories: { jiho: [], sunwoo: [], doyun: [] },
   roomCharacter: 'jiho', // Active character invited to personal room
+  closetCharacter: 'jiho', // Active character being dressed in closet (separate from lobby)
   
   isTyping: false,
   typingTimer: null,
@@ -39,12 +47,28 @@ let episodeStartState = null;
 const AUTOSAVE_KEY = 'otome_autosave_ep';
 const UNLOCKED_ENDINGS_KEY = 'otome_unlocked_endings';
 
-// Accessory Metadata
-const ACCESSORIES = {
-  glasses: { name: '스마트 안경', price: 100, icon: 'glasses' },
-  ears: { name: '귀여운 고양이 귀', price: 200, icon: 'cat' },
-  scarf: { name: '붉은 목도리', price: 300, icon: 'ribbon' }
+// Costume Metadata
+const COSTUMES = {
+  uniform: { name: '기본 교복 의상', price: 0, icon: 'graduation-cap' },
+  casual: { name: '캐주얼 사복 의상', price: 300, icon: 'shirt' },
+  date: { name: '데이트 복장', price: 500, icon: 'heart' }
 };
+// Legacy mapping for compatibility
+const ACCESSORIES = COSTUMES;
+
+// Ensure costume state is properly initialized (safety guard for old saves)
+function ensureCostumeState() {
+  if (!state.equippedCostumes) {
+    state.equippedCostumes = { jiho: 'uniform', sunwoo: 'uniform', doyun: 'uniform' };
+  }
+  if (!state.unlockedCostumes) {
+    state.unlockedCostumes = { jiho: ['uniform'], sunwoo: ['uniform'], doyun: ['uniform'] };
+  }
+  ['jiho', 'sunwoo', 'doyun'].forEach(c => {
+    if (!state.equippedCostumes[c]) state.equippedCostumes[c] = 'uniform';
+    if (!state.unlockedCostumes[c]) state.unlockedCostumes[c] = ['uniform'];
+  });
+}
 
 // Part-time Jobs Metadata
 const JOBS = {
@@ -244,7 +268,22 @@ const DOM = {
   // Pause Menu Actions
   btnMenuLog: document.getElementById('btn-menu-log'),
   btnMenuRestart: document.getElementById('btn-menu-restart'),
-  btnMenuLobby: document.getElementById('btn-menu-lobby')
+  btnMenuLobby: document.getElementById('btn-menu-lobby'),
+  
+  // Font Selector
+  fontButtons: document.querySelectorAll('.font-opt-btn'),
+
+  // Closet Navigation
+  btnClosetPrev: document.getElementById('btn-closet-prev'),
+  btnClosetNext: document.getElementById('btn-closet-next'),
+
+  // Costume Overlays
+  lobbyCostumeOverlay: document.getElementById('lobby-costume-overlay'),
+  closetCostumeOverlay: document.getElementById('closet-costume-overlay'),
+  roomCostumeOverlay: document.getElementById('room-costume-overlay'),
+  gameCostumeJiho: document.getElementById('game-costume-jiho'),
+  gameCostumeSunwoo: document.getElementById('game-costume-sunwoo'),
+  gameCostumeDoyun: document.getElementById('game-costume-doyun')
 };
 
 // ==========================================================================
@@ -255,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupEventListeners();
   checkAutosaveExists();
   updateGalleryUI();
+  initFontSettings();
 });
 
 // Create Falling Cherry Blossoms
@@ -436,6 +476,39 @@ function setupEventListeners() {
   document.querySelectorAll('.btn-close-modal').forEach(btn => {
     btn.addEventListener('click', () => closeAllModals());
   });
+  
+  // Font selector options click
+  DOM.fontButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const fontName = btn.getAttribute('data-font');
+      applyFont(fontName);
+    });
+  });
+  
+  // Closet Navigation (uses separate closetCharacter, NOT lobbyCharacter)
+  if (DOM.btnClosetPrev) {
+    DOM.btnClosetPrev.addEventListener('click', () => {
+      switchClosetCharacter(-1);
+    });
+  }
+  if (DOM.btnClosetNext) {
+    DOM.btnClosetNext.addEventListener('click', () => {
+      switchClosetCharacter(1);
+    });
+  }
+
+  // Register transparent background removal listeners for newly generated outfits
+  [
+    DOM.lobbyCharSprite, DOM.closetCharSprite, DOM.roomCharSprite, DOM.charJiho, DOM.charSunwoo, DOM.charDoyun,
+    DOM.lobbyCostumeOverlay, DOM.closetCostumeOverlay, DOM.roomCostumeOverlay,
+    DOM.gameCostumeJiho, DOM.gameCostumeSunwoo, DOM.gameCostumeDoyun
+  ].forEach(img => {
+    if (img) {
+      img.addEventListener('load', () => {
+        makeSpriteTransparent(img);
+      });
+    }
+  });
 }
 
 function checkAutosaveExists() {
@@ -459,6 +532,16 @@ function startNewGame(customName) {
     // Tab System States
     activeLobbyTab: 'main',
     points: 0,
+    unlockedCostumes: {
+      jiho: ['uniform'],
+      sunwoo: ['uniform'],
+      doyun: ['uniform']
+    },
+    equippedCostumes: {
+      jiho: 'uniform',
+      sunwoo: 'uniform',
+      doyun: 'uniform'
+    },
     unlockedAccessories: [],
     equippedAccessories: {
       jiho: [],
@@ -466,6 +549,7 @@ function startNewGame(customName) {
       doyun: []
     },
     roomCharacter: 'jiho',
+    closetCharacter: 'jiho',
     
     isTyping: false,
     typingTimer: null,
@@ -518,13 +602,24 @@ function playTransition(type, callback) {
 // 5-TAB NAVIGATION BAR ENGINE
 // ==========================================================================
 function enterLobby() {
+  ensureCostumeState();
   showScreen(DOM.lobbyScreen);
   switchTab(state.activeLobbyTab || 'main');
   renderLobbyHUD();
 }
 
 function switchTab(tabName) {
+  ensureCostumeState();
   state.activeLobbyTab = tabName;
+  
+  // Toggle subtab-active class on lobby screen to hide top HUD and move header titles up
+  if (DOM.lobbyScreen) {
+    if (tabName === 'main') {
+      DOM.lobbyScreen.classList.remove('subtab-active');
+    } else {
+      DOM.lobbyScreen.classList.add('subtab-active');
+    }
+  }
   
   // 1. Update navigation tab active class
   DOM.navTabs.forEach(tabBtn => {
@@ -599,7 +694,7 @@ function renderLobbyCharacter() {
   DOM.lobbyCharSprite.classList.remove('active');
   
   setTimeout(() => {
-    DOM.lobbyCharSprite.src = `assets/${state.lobbyCharacter}.png`;
+    DOM.lobbyCharSprite.src = getCharacterSpriteSrc(state.lobbyCharacter);
     DOM.lobbyCharSprite.classList.add('active');
     
     // Apply name styling
@@ -613,9 +708,6 @@ function renderLobbyCharacter() {
     // Set custom dialogue quote
     const quoteIdx = lobbyQuoteIndices[state.lobbyCharacter];
     DOM.lobbyTalkText.innerText = LOBBY_QUOTES[state.lobbyCharacter][quoteIdx].replace(/OO/g, state.playerName);
-    
-    // Render equipped accessories
-    renderAccessoriesOverlays(state.lobbyCharacter, 'lobby');
   }, 100);
 }
 
@@ -626,6 +718,16 @@ function switchLobbyCharacter(direction) {
   state.lobbyCharacter = characters[currentIdx];
   
   renderLobbyCharacter();
+}
+
+// Closet-only character switcher (does NOT affect lobby)
+function switchClosetCharacter(direction) {
+  const characters = ['jiho', 'sunwoo', 'doyun'];
+  let currentIdx = characters.indexOf(state.closetCharacter);
+  currentIdx = (currentIdx + direction + characters.length) % characters.length;
+  state.closetCharacter = characters[currentIdx];
+  clearClosetPreviews();
+  renderClosetTab();
 }
 
 function cycleLobbyCharacterQuote() {
@@ -661,37 +763,62 @@ function playCurrentEpisode() {
 // TAB 2: CLOSET (옷장) SYSTEM
 // ==========================================================================
 function renderClosetTab() {
+  ensureCostumeState();
+  // Sync closetCharacter on first open
+  if (!state.closetCharacter) state.closetCharacter = state.lobbyCharacter;
+  
+  const charId = state.closetCharacter;
   const nameMap = { jiho: '한지호', sunwoo: '서선우', doyun: '강도윤' };
-  DOM.closetCharName.innerText = nameMap[state.lobbyCharacter];
+  DOM.closetCharName.innerText = nameMap[charId];
   
   // Set character class on preview wrapper
   const previewWrapper = document.querySelector('.closet-sprite-wrapper');
-  previewWrapper.className = `closet-sprite-wrapper active-${state.lobbyCharacter}`;
+  previewWrapper.className = `closet-sprite-wrapper active-${charId}`;
   
-  DOM.closetCharSprite.src = `assets/${state.lobbyCharacter}.png`;
-  
-  // Sync accessories (show equipped ones)
-  renderAccessoriesOverlays(state.lobbyCharacter, 'closet');
-  
-  // Clear any previewing highlights
-  clearClosetPreviews();
+  // Show either preview costume or equipped costume
+  const activeCostume = closetPreviewItem || state.equippedCostumes[charId] || 'uniform';
+  DOM.closetCharSprite.src = getCharacterSpriteSrc(charId, activeCostume);
   
   // Sync items buttons
   document.querySelectorAll('.closet-item').forEach(itemCard => {
     const itemId = itemCard.getAttribute('data-item');
     const btn = itemCard.querySelector('.btn-item-action');
-    const isUnlocked = state.unlockedAccessories.includes(itemId);
-    const isEquipped = state.equippedAccessories[state.lobbyCharacter].includes(itemId);
     
-    if (!isUnlocked) {
-      btn.innerText = '구매하기';
-      btn.className = 'btn-item-action buy';
-    } else if (isEquipped) {
-      btn.innerText = '장착해제';
-      btn.className = 'btn-item-action unequip';
+    // Highlight preview item card
+    if (itemId === closetPreviewItem) {
+      itemCard.classList.add('previewing');
     } else {
-      btn.innerText = '장착하기';
-      btn.className = 'btn-item-action equip';
+      itemCard.classList.remove('previewing');
+    }
+    
+    // Check unlock state
+    const isUnlocked = itemId === 'uniform' || (state.unlockedCostumes[charId] && state.unlockedCostumes[charId].includes(itemId));
+    const isEquipped = state.equippedCostumes[charId] === itemId;
+    
+    if (itemId === 'uniform') {
+      if (isEquipped) {
+        btn.innerText = '착용중';
+        btn.className = 'btn-item-action equip active';
+        btn.disabled = true;
+      } else {
+        btn.innerText = '착용하기';
+        btn.className = 'btn-item-action equip';
+        btn.disabled = false;
+      }
+    } else {
+      if (!isUnlocked) {
+        btn.innerText = '구매하기';
+        btn.className = 'btn-item-action buy';
+        btn.disabled = false;
+      } else if (isEquipped) {
+        btn.innerText = '착용중';
+        btn.className = 'btn-item-action equip active';
+        btn.disabled = true;
+      } else {
+        btn.innerText = '착용하기';
+        btn.className = 'btn-item-action equip';
+        btn.disabled = false;
+      }
     }
   });
 }
@@ -701,79 +828,63 @@ let closetPreviewItem = null;
 
 function toggleClosetPreview(itemId) {
   if (closetPreviewItem === itemId) {
-    // Toggle off: remove preview
-    clearClosetPreviews();
     closetPreviewItem = null;
   } else {
-    // Toggle on: show this preview
-    clearClosetPreviews();
     closetPreviewItem = itemId;
-    
-    // Highlight the card
-    const card = document.querySelector(`.closet-item[data-item="${itemId}"]`);
-    if (card) card.classList.add('previewing');
-    
-    // Show the decor preview on the character
-    const equippedList = state.equippedAccessories[state.lobbyCharacter];
-    const isAlreadyEquipped = equippedList.includes(itemId);
-    
-    if (!isAlreadyEquipped) {
-      const decorEl = document.getElementById(`closet-decor-${itemId}`);
-      if (decorEl) {
-        decorEl.classList.add('preview');
-      }
-    }
   }
+  
+  // Re-render preview using closetCharacter
+  const charId = state.closetCharacter || state.lobbyCharacter;
+  const activeCostume = closetPreviewItem || state.equippedCostumes[charId] || 'uniform';
+  DOM.closetCharSprite.src = getCharacterSpriteSrc(charId, activeCostume);
+  
+  document.querySelectorAll('.closet-item').forEach(itemCard => {
+    const cardItemId = itemCard.getAttribute('data-item');
+    if (cardItemId === closetPreviewItem) {
+      itemCard.classList.add('previewing');
+    } else {
+      itemCard.classList.remove('previewing');
+    }
+  });
 }
 
 function clearClosetPreviews() {
-  // Remove card highlights
-  document.querySelectorAll('.closet-item.previewing').forEach(card => {
-    card.classList.remove('previewing');
-  });
-  
-  // Remove preview from decor layers
-  ['glasses', 'ears', 'scarf'].forEach(accId => {
-    const decorEl = document.getElementById(`closet-decor-${accId}`);
-    if (decorEl) {
-      decorEl.classList.remove('preview');
-    }
-  });
-  
   closetPreviewItem = null;
 }
 
 function handleAccessoryAction(itemId) {
-  const isUnlocked = state.unlockedAccessories.includes(itemId);
+  ensureCostumeState();
+  const charId = state.closetCharacter || state.lobbyCharacter;
+  const isUnlocked = itemId === 'uniform' || (state.unlockedCostumes[charId] && state.unlockedCostumes[charId].includes(itemId));
   
   if (!isUnlocked) {
     // BUY logic
-    const price = ACCESSORIES[itemId].price;
+    const price = COSTUMES[itemId].price;
     if (state.points >= price) {
       state.points -= price;
-      state.unlockedAccessories.push(itemId);
+      if (!state.unlockedCostumes[charId]) {
+        state.unlockedCostumes[charId] = ['uniform'];
+      }
+      state.unlockedCostumes[charId].push(itemId);
       
+      // Equip immediately upon buy
+      state.equippedCostumes[charId] = itemId;
+      
+      clearClosetPreviews();
       renderClosetTab();
       renderLobbyHUD();
+      renderLobbyCharacter(); // Sync lobby clothing
       autosaveEpisodeCleared();
-      alert(`[${ACCESSORIES[itemId].name}] 소품을 구매했습니다!`);
+      alert(`[${COSTUMES[itemId].name}] 의상을 구매하여 착용했습니다!`);
     } else {
       alert('포인트(P)가 부족합니다. 아르바이트를 먼저 해오세요!');
     }
   } else {
-    // EQUIP toggle logic
-    const equippedList = state.equippedAccessories[state.lobbyCharacter];
-    const itemIdx = equippedList.indexOf(itemId);
-    
-    if (itemIdx !== -1) {
-      // Unequip
-      equippedList.splice(itemIdx, 1);
-    } else {
-      // Equip
-      equippedList.push(itemId);
-    }
-    
+    // EQUIP logic
+    state.equippedCostumes[charId] = itemId;
+    clearClosetPreviews();
     renderClosetTab();
+    renderLobbyCharacter(); // Sync lobby clothing
     autosaveEpisodeCleared();
   }
 }
@@ -816,40 +927,104 @@ function renderJobTab() {
   }
 }
 
+const JOB_META = {
+  cafe: {
+    charId: 'sunwoo',
+    sdSrc: 'assets/sd_sunwoo.png',
+    title: '베이커리 카페 알바',
+    icon: 'fa-mug-hot',
+    theme: 'theme-cafe',
+    status: '"달콤한 초코 라떼와 갓 구운 빵 만드는 중... ☕"',
+    reward: 30
+  },
+  library: {
+    charId: 'jiho',
+    sdSrc: 'assets/sd_jiho.png',
+    title: '도서실 서적 정리',
+    icon: 'fa-book-open',
+    theme: 'theme-library',
+    status: '"도서실 서적을 분류하고 깔끔하게 정돈하는 중... 📚"',
+    reward: 80
+  },
+  flower: {
+    charId: 'doyun',
+    sdSrc: 'assets/sd_doyun.png',
+    title: '꽃집 카운터 보조',
+    icon: 'fa-seedling',
+    theme: 'theme-flower',
+    status: '"향기로운 벚꽃 꽃다발을 포장하는 중... 🌸"',
+    reward: 150
+  }
+};
+
 function startPartTimeJob(jobId) {
   if (activeJobTimer !== null) return;
   
   const job = JOBS[jobId];
-  const fillBar = document.getElementById(`progress-job-${jobId}`);
-  const startBtn = document.querySelector(`.btn-start-job[data-job="${jobId}"]`);
+  const meta = JOB_META[jobId] || JOB_META.cafe;
+  const inlineFillBar = document.getElementById(`progress-job-${jobId}`);
   
   disableJobButtons(true);
-  startBtn.innerText = '진행 중...';
   
+  // 1. Get Modal Elements
+  const modal = document.getElementById('modal-job-animation');
+  const titleEl = document.getElementById('job-anim-title');
+  const iconEl = document.getElementById('job-anim-icon');
+  const timerEl = document.getElementById('job-anim-timer');
+  const stageEl = document.getElementById('job-anim-stage');
+  const chibiContainerEl = document.getElementById('job-chibi-container');
+  const chibiImgEl = document.getElementById('job-chibi-img');
+  const statusTextEl = document.getElementById('job-anim-status-text');
+  const progressFillEl = document.getElementById('job-anim-progress-fill');
+  const completeOverlay = document.getElementById('job-anim-complete-overlay');
+  const rewardValEl = document.getElementById('job-anim-reward-val');
+
+  // 2. Setup Modal Props
+  if (titleEl) titleEl.innerText = meta.title;
+  if (iconEl) iconEl.className = `fa-solid ${meta.icon}`;
+  if (stageEl) stageEl.className = `job-anim-stage ${meta.theme}`;
+  if (chibiContainerEl) chibiContainerEl.className = `job-chibi-anim-box char-${meta.charId}`;
+  if (chibiImgEl) chibiImgEl.src = meta.sdSrc;
+  if (statusTextEl) statusTextEl.innerText = meta.status;
+  if (progressFillEl) progressFillEl.style.width = '0%';
+  if (completeOverlay) completeOverlay.classList.remove('active');
+  if (rewardValEl) rewardValEl.innerText = `+${job.reward} P`;
+  
+  // 3. Open Modal
+  if (modal) modal.classList.add('active');
+
   let elapsed = 0;
   const intervalTime = 100;
-  
+
   activeJobTimer = setInterval(() => {
     elapsed += intervalTime;
+    const remainingSec = Math.max(0, Math.ceil((job.durationMs - elapsed) / 1000));
     const pct = Math.min(100, (elapsed / job.durationMs) * 100);
-    fillBar.style.width = `${pct}%`;
     
+    // Update timer string (00:05)
+    if (timerEl) timerEl.innerText = `00:${remainingSec < 10 ? '0' : ''}${remainingSec}`;
+    if (progressFillEl) progressFillEl.style.width = `${pct}%`;
+    if (inlineFillBar) inlineFillBar.style.width = `${pct}%`;
+
     if (elapsed >= job.durationMs) {
       clearInterval(activeJobTimer);
       activeJobTimer = null;
-      
-      // Earn points
+
+      // 4. Job Complete!
       state.points += job.reward;
-      
-      // Reset layout
-      fillBar.style.width = '0%';
-      startBtn.innerText = '알바시작';
-      disableJobButtons(false);
-      
       renderLobbyHUD();
       autosaveEpisodeCleared();
-      
-      alert(`수고하셨습니다!\n아르바이트 완료 보상으로 +${job.reward} P를 획득했습니다!`);
+
+      // Show Complete Overlay inside modal
+      if (completeOverlay) completeOverlay.classList.add('active');
+
+      // Auto close modal after 1.8 seconds
+      setTimeout(() => {
+        if (modal) modal.classList.remove('active');
+        if (completeOverlay) completeOverlay.classList.remove('active');
+        if (inlineFillBar) inlineFillBar.style.width = '0%';
+        disableJobButtons(false);
+      }, 1800);
     }
   }, intervalTime);
 }
@@ -879,7 +1054,7 @@ function renderRoomTab() {
   
   // 3. Render Invited Sprite
   DOM.roomCharSprite.className = 'room-char-sprite'; // reset animations
-  DOM.roomCharSprite.src = `assets/${state.roomCharacter}.png`;
+  DOM.roomCharSprite.src = getCharacterSpriteSrc(state.roomCharacter);
   
   // 4. Render dialogue box
   const nameMap = { jiho: '지호', sunwoo: '선우', doyun: '도윤' };
@@ -896,9 +1071,75 @@ function renderRoomTab() {
   if (DOM.roomGiftPointsVal) DOM.roomGiftPointsVal.innerText = state.points;
 }
 
+let roomSwitchingLock = false;
+
 function inviteToPersonalRoom(charId) {
+  if (state.roomCharacter === charId) return;
+  if (roomSwitchingLock) return;
+  roomSwitchingLock = true;
+  
   state.roomCharacter = charId;
-  renderRoomTab();
+  const newSrc = getCharacterSpriteSrc(charId);
+  
+  // Sync active select buttons immediately
+  DOM.btnInviteChars.forEach(btn => {
+    if (btn.getAttribute('data-char') === charId) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  if (DOM.roomCharSprite) {
+    // 1. Smoothly fade out current sprite over 200ms
+    DOM.roomCharSprite.style.opacity = '0';
+    
+    // 2. Preload the new sprite image in background
+    const tempImg = new Image();
+    tempImg.src = newSrc;
+    
+    let executed = false;
+    const onPreloadComplete = () => {
+      if (executed) return;
+      executed = true;
+      
+      setTimeout(() => {
+        // Update viewport class and sprite src while invisible
+        const viewport = document.querySelector('.room-sprite-viewport');
+        if (viewport) viewport.className = `room-sprite-viewport active-${charId}`;
+        
+        DOM.roomCharSprite.className = 'room-char-sprite';
+        DOM.roomCharSprite.src = newSrc;
+        
+        // Update dialogue speaker name
+        const nameMap = { jiho: '지호', sunwoo: '선우', doyun: '도윤' };
+        DOM.roomTalkName.innerText = nameMap[charId];
+        if (charId === 'jiho') DOM.roomTalkName.style.color = '#8cb4ff';
+        if (charId === 'sunwoo') DOM.roomTalkName.style.color = '#ffa68c';
+        if (charId === 'doyun') DOM.roomTalkName.style.color = '#cfcfd6';
+        DOM.roomTalkText.innerText = "이곳은 조용해서 좋네. (선물을 주거나 소년을 터치해 보세요!)";
+        
+        // 3. Smoothly fade in after DOM paint
+        setTimeout(() => {
+          DOM.roomCharSprite.style.opacity = '1';
+          setTimeout(() => {
+            roomSwitchingLock = false;
+          }, 350);
+        }, 40);
+      }, 200); // 200ms matches fade-out duration
+    };
+    
+    if (tempImg.complete) {
+      onPreloadComplete();
+    } else {
+      tempImg.onload = onPreloadComplete;
+      tempImg.onerror = onPreloadComplete;
+    }
+  } else {
+    renderRoomTab();
+    roomSwitchingLock = false;
+  }
+  
   autosaveEpisodeCleared();
 }
 
@@ -1029,6 +1270,8 @@ function autosaveEpisodeCleared() {
     // Save New Tab System variables
     activeLobbyTab: state.activeLobbyTab,
     points: state.points,
+    unlockedCostumes: state.unlockedCostumes,
+    equippedCostumes: state.equippedCostumes,
     unlockedAccessories: state.unlockedAccessories,
     equippedAccessories: state.equippedAccessories,
     roomCharacter: state.roomCharacter,
@@ -1052,6 +1295,16 @@ function loadLastSave() {
   // Load Tab System states
   state.activeLobbyTab = saveData.activeLobbyTab || 'main';
   state.points = saveData.points || 0;
+  state.unlockedCostumes = saveData.unlockedCostumes || {
+    jiho: ['uniform'],
+    sunwoo: ['uniform'],
+    doyun: ['uniform']
+  };
+  state.equippedCostumes = saveData.equippedCostumes || {
+    jiho: 'uniform',
+    sunwoo: 'uniform',
+    doyun: 'uniform'
+  };
   state.unlockedAccessories = saveData.unlockedAccessories || [];
   state.equippedAccessories = saveData.equippedAccessories || { jiho: [], sunwoo: [], doyun: [] };
   state.roomCharacter = saveData.roomCharacter || 'jiho';
@@ -1156,10 +1409,7 @@ function updateCharacterSprites(step) {
     DOM.wrapperJiho.className = 'char-sprite-wrapper active-jiho';
     DOM.charJiho.classList.add('active', 'speaking', `expr-${expr}`);
     
-    let srcPath = 'assets/jiho.png';
-    if (expr !== 'normal') {
-      srcPath = `assets/jiho_${expr}.png`;
-    }
+    let srcPath = getCharacterSpriteSrcWithExpr('jiho', expr);
     if (DOM.charJiho.getAttribute('src') !== srcPath) {
       DOM.charJiho.src = srcPath;
     }
@@ -1169,10 +1419,7 @@ function updateCharacterSprites(step) {
     DOM.wrapperSunwoo.className = 'char-sprite-wrapper active-sunwoo';
     DOM.charSunwoo.classList.add('active', 'speaking', `expr-${expr}`);
     
-    let srcPath = 'assets/sunwoo.png';
-    if (expr !== 'normal') {
-      srcPath = `assets/sunwoo_${expr}.png`;
-    }
+    let srcPath = getCharacterSpriteSrcWithExpr('sunwoo', expr);
     if (DOM.charSunwoo.getAttribute('src') !== srcPath) {
       DOM.charSunwoo.src = srcPath;
     }
@@ -1182,10 +1429,7 @@ function updateCharacterSprites(step) {
     DOM.wrapperDoyun.className = 'char-sprite-wrapper active-doyun';
     DOM.charDoyun.classList.add('active', 'speaking', `expr-${expr}`);
     
-    let srcPath = 'assets/doyun.png';
-    if (expr !== 'normal') {
-      srcPath = `assets/doyun_${expr}.png`;
-    }
+    let srcPath = getCharacterSpriteSrcWithExpr('doyun', expr);
     if (DOM.charDoyun.getAttribute('src') !== srcPath) {
       DOM.charDoyun.src = srcPath;
     }
@@ -1489,4 +1733,126 @@ function updateGalleryUI() {
       if (lockOverlay) lockOverlay.remove();
     }
   });
+}
+
+// ==========================================================================
+// FONT SETTINGS LOGIC
+// ==========================================================================
+const FONT_STORAGE_KEY = 'otome_game_font';
+
+function initFontSettings() {
+  const savedFont = localStorage.getItem(FONT_STORAGE_KEY) || 'noto-sans';
+  applyFont(savedFont);
+}
+
+function applyFont(fontName) {
+  // Remove all potential font classes from body
+  document.body.classList.remove('font-gowun-batang', 'font-nanum-pen', 'font-noto-sans');
+  
+  // Add new font class
+  document.body.classList.add(`font-${fontName}`);
+  
+  // Save to localStorage
+  localStorage.setItem(FONT_STORAGE_KEY, fontName);
+  
+  // Update active state on buttons
+  DOM.fontButtons.forEach(btn => {
+    const btnFont = btn.getAttribute('data-font');
+    if (btnFont === fontName) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+// ==========================================================================
+// COSTUME RENDER HELPERS
+// ==========================================================================
+function getCharacterSpriteSrc(charId, costume = '') {
+  ensureCostumeState();
+  const activeCostume = costume || state.equippedCostumes[charId] || 'uniform';
+  if (activeCostume === 'casual') {
+    return `assets/${charId}_casual.png`;
+  }
+  if (activeCostume === 'date') {
+    return `assets/${charId}_date.png`;
+  }
+  return `assets/${charId}.png`;
+}
+
+function getCharacterSpriteSrcWithExpr(charId, expr = '') {
+  ensureCostumeState();
+  const costume = state.equippedCostumes[charId] || 'uniform';
+  if (costume === 'casual') {
+    if (expr && expr !== 'normal') {
+      return `assets/${charId}_casual_${expr}.png`;
+    }
+    return `assets/${charId}_casual.png`;
+  }
+  if (costume === 'date') {
+    if (expr && expr !== 'normal') {
+      return `assets/${charId}_date_${expr}.png`;
+    }
+    return `assets/${charId}_date.png`;
+  }
+  if (expr && expr !== 'normal') {
+    return `assets/${charId}_${expr}.png`;
+  }
+  return `assets/${charId}.png`;
+}
+
+// Automatically remove white background from casual/date sprites dynamically
+function makeSpriteTransparent(imgEl) {
+  if (!imgEl || !imgEl.src) return;
+  if (imgEl.src.startsWith('data:') || imgEl.src === '') return;
+  // Apply only to newly generated casual and date outfits
+  if (!imgEl.src.includes('_casual') && !imgEl.src.includes('_date')) return;
+
+  const tempImg = new Image();
+  tempImg.crossOrigin = "anonymous";
+  tempImg.src = imgEl.src;
+  tempImg.onload = function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = tempImg.width;
+    canvas.height = tempImg.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(tempImg, 0, 0);
+
+    try {
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+
+      // Filter bright white pixels (RGB > 240) and set alpha to 0
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i+1];
+        const b = data[i+2];
+        if (r > 240 && g > 240 && b > 240) {
+          data[i+3] = 0;
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+      imgEl.src = canvas.toDataURL('image/png');
+    } catch (e) {
+      console.warn("Chroma-key failed: ", e);
+    }
+  };
+}
+
+// Update layered costume overlay based on character state
+function updateCostumeOverlay(charId, overlayImgEl, costume = '') {
+  ensureCostumeState();
+  if (!overlayImgEl) return;
+
+  const activeCostume = costume || state.equippedCostumes[charId] || 'uniform';
+
+  if (activeCostume === 'uniform') {
+    overlayImgEl.style.display = 'none';
+    overlayImgEl.src = '';
+  } else {
+    // casual or date
+    overlayImgEl.src = `assets/${charId}_${activeCostume}.png`;
+    overlayImgEl.style.display = 'block';
+  }
 }
