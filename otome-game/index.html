@@ -159,66 +159,19 @@
             </div>
           </div>
 
-          <!-- TAB 2: CLOSET (옷장) -->
-          <div id="lobby-tab-closet" class="lobby-tab-content">
-            <div class="tab-header-title">
-              <h3><i class="fa-solid fa-shirt"></i> 옷장 및 소품샵</h3>
-              <p>알바로 모은 포인트로 소품을 구매하여 입혀주세요.</p>
-            </div>
-            
-            <!-- Character Preview Area inside Closet -->
-            <div class="closet-preview-container">
-              <button id="btn-closet-prev" class="closet-arrow-btn left" aria-label="이전 남주인공"><i class="fa-solid fa-chevron-left"></i></button>
-              <div class="closet-sprite-wrapper">
-                <div class="closet-char-container">
-                  <img id="closet-char-sprite" class="closet-char-sprite" src="assets/jiho.png" alt="남주인공 스탠딩">
-                  <img id="closet-costume-overlay" class="costume-overlay-layer closet-char-sprite" src="" alt="의상 오버레이" style="display: none;">
-                  <!-- Legacy overlay layers kept hidden for backward compatibility -->
-                  <div id="closet-decor-glasses" class="decor-layer decor-glasses"></div>
-                  <div id="closet-decor-ears" class="decor-layer decor-ears"></div>
-                  <div id="closet-decor-scarf" class="decor-layer decor-scarf"></div>
-                </div>
-              </div>
-              <button id="btn-closet-next" class="closet-arrow-btn right" aria-label="다음 남주인공"><i class="fa-solid fa-chevron-right"></i></button>
-              <div class="closet-preview-name">
-                <span id="closet-char-name">한지호</span>
-              </div>
-            </div>
-            
-            <!-- Costumes items list -->
-            <div class="closet-items-grid">
-              <div class="closet-item" data-item="uniform">
-                <div class="item-icon-wrapper"><i class="fa-solid fa-graduation-cap"></i></div>
-                <div class="item-details">
-                  <span class="item-name">기본 교복 의상</span>
-                  <span class="item-price">기본 제공</span>
-                </div>
-                <button class="btn-item-action" data-item="uniform">착용중</button>
-              </div>
-              <div class="closet-item" data-item="casual">
-                <div class="item-icon-wrapper"><i class="fa-solid fa-shirt"></i></div>
-                <div class="item-details">
-                  <span class="item-name">캐주얼 사복 의상</span>
-                  <span class="item-price">300 P</span>
-                </div>
-                <button class="btn-item-action" data-item="casual">구매하기</button>
-              </div>
-              <div class="closet-item" data-item="date">
-                <div class="item-icon-wrapper"><i class="fa-solid fa-heart"></i></div>
-                <div class="item-details">
-                  <span class="item-name">데이트 복장</span>
-                  <span class="item-price">500 P</span>
-                </div>
-                <button class="btn-item-action" data-item="date">구매하기</button>
-              </div>
-            </div>
-          </div>
+
 
           <!-- TAB 3: PART-TIME JOB (알바) -->
           <div id="lobby-tab-job" class="lobby-tab-content">
-            <div class="tab-header-title">
-              <h3><i class="fa-solid fa-briefcase"></i> 방과 후 아르바이트</h3>
-              <p>아르바이트를 완료하고 포인트(P)를 획득하세요.</p>
+            <div class="tab-header-title tab-header-flex">
+              <div class="tab-header-left">
+                <h3><i class="fa-solid fa-briefcase"></i> 방과 후 아르바이트</h3>
+                <p>아르바이트를 완료하고 포인트(P)를 획득하세요.</p>
+              </div>
+              <div class="lobby-points-display">
+                <i class="fa-solid fa-coins gold-coin"></i>
+                <span id="job-points-val">0</span> P
+              </div>
             </div>
             
             <div class="job-list">
@@ -253,7 +206,7 @@
               </div>
 
               <div class="job-summary-footer">
-                <i class="fa-solid fa-lightbulb"></i> 알바로 모은 포인트(P)로 소년들에게 선물하거나 예쁜 의상을 구매해보세요!
+                <i class="fa-solid fa-lightbulb"></i> 알바로 모은 포인트(P)로 소년들에게 선물을 주고 호감도를 높여보세요!
               </div>
             </div>
           </div>
@@ -284,6 +237,12 @@
                 <img id="room-costume-overlay" class="costume-overlay-layer room-char-sprite" src="" alt="의상 오버레이" style="display: none;">
               </div>
               
+              <!-- Gift Animation overlay -->
+              <div id="room-gift-effect" class="room-gift-effect" style="display: none;">
+                <div id="gift-effect-icon-box" class="gift-effect-icon"><i class="fa-solid fa-gift"></i></div>
+                <div id="gift-effect-points-box" class="gift-effect-points">+15</div>
+              </div>
+              
               <!-- Personal Room dialogue display -->
               <div id="room-talk-bubble" class="room-talk-bubble">
                 <span id="room-talk-name">지호</span>
@@ -301,7 +260,7 @@
                 </div>
                 <div class="gift-items-list">
                   <div class="gift-card" data-gift="chocolate">
-                    <div class="gift-icon-wrapper"><i class="fa-solid fa-cookie"></i></div>
+                    <div class="gift-icon-wrapper">🍫</div>
                     <div class="gift-details">
                       <span class="gift-name">수제 초콜릿</span>
                       <span class="gift-benefit">호감도 +15 (50 P)</span>
@@ -309,7 +268,7 @@
                     <button class="btn-buy-gift" data-gift="chocolate">선물</button>
                   </div>
                   <div class="gift-card" data-gift="planner">
-                    <div class="gift-icon-wrapper"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div class="gift-icon-wrapper">📖</div>
                     <div class="gift-details">
                       <span class="gift-name">스터디 플래너</span>
                       <span class="gift-benefit">지호 선호 +30 (80 P)</span>
@@ -317,7 +276,7 @@
                     <button class="btn-buy-gift" data-gift="planner">선물</button>
                   </div>
                   <div class="gift-card" data-gift="drink">
-                    <div class="gift-icon-wrapper"><i class="fa-solid fa-bottle-water"></i></div>
+                    <div class="gift-icon-wrapper">💧</div>
                     <div class="gift-details">
                       <span class="gift-name">이온 음료</span>
                       <span class="gift-benefit">선우 선호 +25 (60 P)</span>
@@ -325,7 +284,7 @@
                     <button class="btn-buy-gift" data-gift="drink">선물</button>
                   </div>
                   <div class="gift-card" data-gift="cd">
-                    <div class="gift-icon-wrapper"><i class="fa-solid fa-compact-disc"></i></div>
+                    <div class="gift-icon-wrapper">💿</div>
                     <div class="gift-details">
                       <span class="gift-name">클래식 CD</span>
                       <span class="gift-benefit">도윤 선호 +35 (100 P)</span>
@@ -415,10 +374,7 @@
             <i class="fa-solid fa-couch"></i>
             <span>로비</span>
           </button>
-          <button class="nav-tab" data-tab="closet">
-            <i class="fa-solid fa-shirt"></i>
-            <span>옷장</span>
-          </button>
+
           <button class="nav-tab" data-tab="job">
             <i class="fa-solid fa-briefcase"></i>
             <span>알바</span>
